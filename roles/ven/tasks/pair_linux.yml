@@ -1,0 +1,38 @@
+---
+# Install VEN on Linux
+
+- name: "VEN | Pair | Linux"
+  become: yes
+  block:
+
+    - name: "Remove VEN data temp directory"
+      file:
+        path: /opt/illumio_ven_data/tmp
+        state: absent
+
+    - name: "Set umask"
+      shell: umask 0026 && umask
+
+    - name: "Recreate VEN data temp directory"
+      file:
+        path: /opt/illumio_ven_data/tmp
+        state: directory
+
+    - name: "Download pairing script"
+      uri:
+        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v18/software/ven/image?pair_script=pair.sh&profile_id={{ illumio_pairing_profile_id }}"
+        method: GET
+        dest: /opt/illumio_ven_data/tmp/pair.sh
+
+    - name: "Update pairing script permissions"
+      file:
+        dest: /opt/illumio_ven_data/tmp/pair.sh
+        mode: +x
+
+    - name: "Run pairing script"
+      shell: "/opt/illumio_ven_data/tmp/pair.sh --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }} --activation-code {{ illumio_pairing_key }}"
+      register: pairing_output
+
+    - name: "Pairing script output"
+      debug:
+        var: pairing_output.stdout_lines

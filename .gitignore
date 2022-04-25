@@ -1,0 +1,33 @@
+# pyenv
+.python-version
+
+# vscode
+.vscode/
+
+# virtual environments
+venv/
+
+# pyc files
+__pycache__/
+*.pyc
+
+# test folders
+.tox/
+.pytest_cache/
+tests/output/
+
+# coverage
+.coverage
+coverage.xml
+report.xml
+
+# build files
+build/
+dist/
+*.egg-info/
+
+# setuptools_scm local dev version file
+_version.py
+
+# mac
+.DS_Store

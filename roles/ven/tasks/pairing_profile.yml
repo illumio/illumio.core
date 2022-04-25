@@ -1,0 +1,60 @@
+---
+# set up pairing profile and key
+- name: "Create pairing profile key"
+  block:
+
+    - name: "Create new pairing profile"
+      uri:
+        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/pairing_profiles"
+        user: "{{ illumio_pce_api_key }}"
+        password: "{{ illumio_pce_api_secret }}"
+        force_basic_auth: yes
+        method: POST
+        status_code: 201
+        body_format: json
+        body:
+          name: "PP-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+          description: "Temporary pairing profile created by Ansible"
+          enabled: true
+          enforcement_mode: "idle"
+          enforcement_mode_lock: true
+          visibility_level: "flow_summary"
+          visibility_level_lock: true
+          env_label_lock: true
+          loc_label_lock: true
+          role_label_lock: true
+          app_label_lock: true
+          log_traffic: true
+          log_traffic_lock: true
+        headers:
+          Content-Type: application/json
+        return_content: yes
+      no_log: yes
+      register: pairing_profile_response
+
+    - name: "Set pairing profile ID"
+      set_fact:
+        illumio_pairing_profile_id: "{{ pairing_profile_response.json['href'] | split('/') | last }}"
+        temporary_profile: true
+
+  when: illumio_pairing_profile_id is not defined
+
+- name: "Get new pairing key"
+  uri:
+    url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/pairing_profiles/{{ illumio_pairing_profile_id }}/pairing_key"
+    user: "{{ illumio_pce_api_key }}"
+    password: "{{ illumio_pce_api_secret }}"
+    force_basic_auth: yes
+    method: POST
+    status_code: 201
+    body_format: json
+    body: "{}"
+    headers:
+      Content-Type: application/json
+    return_content: yes
+  no_log: yes
+  register: pairing_key_response
+
+- name: "Set pairing key"
+  set_fact:
+    illumio_pairing_key: "{{ pairing_key_response.json['activation_code'] }}"

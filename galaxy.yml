@@ -1,0 +1,23 @@
+---
+namespace: illumio
+name: illumio
+version: 0.1.0
+readme: README.md
+authors:
+- Duncan Sommerville <duncan.sommerville@illumio.com>
+description: Ansible collection for managing resources in the Illumio Policy Compute Engine
+license:
+  - Apache-2.0
+license_file: LICENSE
+tags:
+  - illumio
+  - security
+dependencies:
+  ansible.windows: '*'
+  community.general: '*'
+repository: https://github.com/dsommerville-illumio/illumio-ansible
+# documentation: http://docs.example.com
+# homepage: http://example.com
+# issues: http://example.com/issue/tracker
+build_ignore:
+  - '*.tar.gz'
