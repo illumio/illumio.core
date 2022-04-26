@@ -34,7 +34,7 @@
         body:
           vens:
             - href: "{{ ven_href }}"
-          firewall_restore: "default"
+          firewall_restore: "{{ illumio_ven_firewall_restore }}"
         headers:
           Content-Type: application/json
       no_log: yes

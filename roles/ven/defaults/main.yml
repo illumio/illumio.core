@@ -3,4 +3,6 @@
 illumio_pce_port: 443
 illumio_pce_org_id: 1
 
+# Teardown
 illumio_ven_unpair: false
+illumio_ven_firewall_restore: default
