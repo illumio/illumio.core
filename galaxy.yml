@@ -1,7 +1,7 @@
 ---
 namespace: illumio
 name: illumio
-version: 0.1.0
+version: 0.1.1
 readme: README.md
 authors:
 - Duncan Sommerville <duncan.sommerville@illumio.com>
