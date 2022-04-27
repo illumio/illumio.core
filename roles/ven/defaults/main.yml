@@ -1,8 +1,13 @@
 ---
-# VEN role defaults
+# ven role defaults
 illumio_pce_port: 443
 illumio_pce_org_id: 1
 
-# Teardown
+# pairing profile
+illumio_ven_enforcement_mode: idle
+illumio_ven_visibility_level: flow_summary
+illumio_ven_log_traffic: true
+
+# teardown
 illumio_ven_unpair: false
 illumio_ven_firewall_restore: default

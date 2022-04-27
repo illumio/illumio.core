@@ -22,9 +22,16 @@
         method: DELETE
         status_code: 204
       no_log: yes
-      when: temporary_profile is defined
+      ignore_errors: yes
+      when: temporary_profile is defined and temporary_profile
+      tags:
+        - always
 
   when: not illumio_ven_unpair
 
-- include_tasks: unpair.yml
+- name: "VEN | Unpair"
+  block:
+
+    - include_tasks: unpair.yml
+
   when: illumio_ven_unpair

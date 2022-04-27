@@ -1,6 +1,6 @@
 ---
 # set up pairing profile and key
-- name: "Create pairing profile key"
+- name: "Create temporary pairing profile"
   block:
 
     - name: "Create new pairing profile"
@@ -16,16 +16,10 @@
           name: "PP-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
           description: "Temporary pairing profile created by Ansible"
           enabled: true
-          enforcement_mode: "idle"
-          enforcement_mode_lock: true
-          visibility_level: "flow_summary"
-          visibility_level_lock: true
-          env_label_lock: true
-          loc_label_lock: true
-          role_label_lock: true
-          app_label_lock: true
-          log_traffic: true
-          log_traffic_lock: true
+          enforcement_mode: "{{ illumio_ven_enforcement_mode }}"
+          visibility_level: "{{ illumio_ven_visibility_level }}"
+          log_traffic: "{{ illumio_ven_log_traffic | bool }}"
+          agent_software_release: "{{ illumio_ven_version | default(omit) }}"
         headers:
           Content-Type: application/json
         return_content: yes
@@ -35,7 +29,7 @@
     - name: "Set pairing profile ID"
       set_fact:
         illumio_pairing_profile_id: "{{ pairing_profile_response.json['href'] | split('/') | last }}"
-        temporary_profile: true
+        temporary_profile: yes
 
   when: illumio_pairing_profile_id is not defined
 
