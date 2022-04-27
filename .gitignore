@@ -31,3 +31,6 @@ _version.py
 
 # mac
 .DS_Store
+
+# local testing files
+local/
