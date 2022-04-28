@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: ven_library
+  author: Duncan Sommerville
+  description: Add packages to the PCE VEN library
+  company: Illumio
+  license: license (Apache)
+  min_ansible_version: 2.9
+  platforms:
+    # see https://support.illumio.com/software/os-support-package-dependencies/pce.html
+    - name: EL
+      versions:
+        - 8
+        - 7
+  galaxy_tags:
+    - illumio
+    - pce
+    - ven
+    - network
+    - security
+
+dependencies: []
