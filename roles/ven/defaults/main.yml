@@ -10,4 +10,4 @@ illumio_ven_log_traffic: true
 
 # teardown
 illumio_ven_unpair: false
-illumio_ven_firewall_restore: default
+illumio_ven_firewall_restore: recommended

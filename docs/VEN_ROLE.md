@@ -79,7 +79,13 @@ If a profile ID is not specified, the following variables can be set to customiz
 ### Teardown  
 
 `illumio_ven_unpair` - if set to true, unpairs the VEN from the PCE  
-`illumio_ven_firewall_restore` - the strategy to use when restoring the firewall state after the VEN is unpaired. Must be one of `default`, `saved`, or `disable`. Defaults to `default`. This variable has no effect if `illumio_ven_unpair` is not set to true  
+`illumio_ven_firewall_restore` - the strategy to use when restoring the firewall state after the VEN is unpaired. Must be one of `recommended`, `saved`, or `open`. Defaults to `recommended`. This variable has no effect if `illumio_ven_unpair` is not set to true  
+
+
+    recommended    Remove all firewall rules and apply recommended policy (allow SSH/22 and ICMP only).
+    saved          Remove all applied Illumio rules and policy from the current firewall.
+    open           Remove all firewall rules and leave all ports open.
+
 
 ## License
 
