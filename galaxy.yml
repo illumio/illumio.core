@@ -1,7 +1,7 @@
 ---
 namespace: illumio
 name: illumio
-version: 0.1.1
+version: 0.2.0
 readme: README.md
 authors:
 - Duncan Sommerville <duncan.sommerville@illumio.com>
@@ -11,13 +11,12 @@ license:
 license_file: LICENSE
 tags:
   - illumio
+  - network
   - security
 dependencies:
   ansible.windows: '*'
   community.general: '*'
+  kubernetes.core: '*'
 repository: https://github.com/dsommerville-illumio/illumio-ansible
-# documentation: http://docs.example.com
-# homepage: http://example.com
-# issues: http://example.com/issue/tracker
 build_ignore:
   - '*.tar.gz'
