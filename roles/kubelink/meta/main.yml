@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: kubelink
+  author: Duncan Sommerville
+  description: Install Kubelink to container orchestration platforms
+  company: Illumio
+  license: license (Apache)
+  min_ansible_version: 2.9
+  galaxy_tags:
+    - illumio
+    - network
+    - security
+    - kubernetes
+    - openshift
+
+dependencies: []

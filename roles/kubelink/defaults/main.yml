@@ -1,0 +1,14 @@
+---
+# pce connection defaults
+illumio_pce_port: 443
+illumio_pce_org_id: 1
+
+# kubelink
+
+illumio_kubelink_namespace: "illumio-system"
+illumio_kubelink_secret_name: "illumio-kubelink-config"
+illumio_kubelink_ignore_cert: "false"
+illumio_kubelink_log_level: "1"
+
+illumio_kubelink_container_name: "kubelink/illumio-kubelink"
+illumio_kubelink_container_version: "latest"

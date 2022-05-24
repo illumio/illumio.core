@@ -1,0 +1,63 @@
+---
+
+- name: "Check for existing Ansible container cluster"
+  block:
+
+    - name: "Fetch container cluster"
+      uri:
+        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/container_clusters?name={{ illumio_container_cluster_name }}&max_results=1"
+        user: "{{ illumio_pce_api_key }}"
+        password: "{{ illumio_pce_api_secret }}"
+        force_basic_auth: yes
+        method: GET
+        status_code: 200
+        return_content: yes
+      no_log: yes
+      register: container_cluster_read_response
+
+    - name: "Set container cluster ID"
+      set_fact:
+        illumio_container_cluster_id: "{{ container_cluster_read_response.json[0]['href'] | split('/') | last }}"
+      when: container_cluster_read_response.json | length > 0
+
+  when: illumio_container_cluster_id is not defined and illumio_container_cluster_name is defined
+
+- name: "Create container cluster"
+  block:
+
+    - name: "Generate container cluster name"
+      set_fact:
+        illumio_container_cluster_name: "CC-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+      when: illumio_container_cluster_name is not defined
+
+    - name: "Create new container cluster"
+      uri:
+        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/container_clusters"
+        user: "{{ illumio_pce_api_key }}"
+        password: "{{ illumio_pce_api_secret }}"
+        force_basic_auth: yes
+        method: POST
+        status_code: 201
+        body_format: json
+        body:
+          name: "{{ illumio_container_cluster_name }}"
+          description: "Container cluster created by Ansible"
+        headers:
+          Content-Type: application/json
+        return_content: yes
+      no_log: yes
+      register: container_cluster_create_response
+
+    - debug:
+        var: container_cluster_create_response.json
+
+    - name: "Set container cluster ID and token"
+      set_fact:
+        illumio_container_cluster_id: "{{ container_cluster_create_response.json['href'] | split('/') | last }}"
+        illumio_container_cluster_token: "{{ container_cluster_create_response.json['container_cluster_token'] }}"
+
+  when: illumio_container_cluster_id is not defined
+
+- fail:
+    msg: "illumio_container_cluster_token is not defined. Did you specify illumio_container_cluster_id or illumio_container_cluster_name without setting the token?"
+  when: illumio_container_cluster_token is not defined or not illumio_container_cluster_token

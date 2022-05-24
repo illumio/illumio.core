@@ -1,0 +1,101 @@
+#
+# Copyright 2022 Illumio, Inc. All Rights Reserved.
+#
+# Kubelink '{{ illumio_kubelink_container_version }}'
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: illumio-kubelink
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - nodes
+  - hostsubnets
+  - replicationcontrollers
+  - services
+  - replicasets
+  - daemonsets
+  - namespaces
+  - statefulsets
+  - pods
+  - pods/log
+  verbs:
+  - list
+  - watch
+  - get
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: illumio-kubelink
+  namespace: '{{ illumio_kubelink_namespace }}'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: illumio-kubelink
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: illumio-kubelink
+subjects:
+- kind: ServiceAccount
+  name: illumio-kubelink
+  namespace: '{{ illumio_kubelink_namespace }}'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: illumio-kubelink
+  namespace: '{{ illumio_kubelink_namespace }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: illumio-kubelink
+  template:
+    metadata:
+      labels:
+        app: illumio-kubelink
+    spec:
+      serviceAccountName: illumio-kubelink
+{% if illumio_kubelink_image_pull_secret is defined %}
+      imagePullSecrets:
+      - name: {{ illumio_kubelink_image_pull_secret }}
+{% endif %}
+      containers:
+      - name: illumio-kubelink
+        command: [ "/kubelink" ]
+        image: '{{ illumio_kubelink_container_registry ~ '/' if illumio_kubelink_container_registry is defined and illumio_kubelink_container_registry|length | default('', true) }}{{ illumio_kubelink_container_name }}:{{ illumio_kubelink_container_version }}'
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ILO_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: '{{ illumio_kubelink_secret_name }}'
+                key: ilo_server
+          - name: ILO_CLUSTER_UUID
+            valueFrom:
+              secretKeyRef:
+                name: '{{ illumio_kubelink_secret_name }}'
+                key: ilo_cluster_uuid
+          - name: ILO_CLUSTER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: '{{ illumio_kubelink_secret_name }}'
+                key: ilo_cluster_token
+          - name: IGNORE_CERT
+            valueFrom:
+              secretKeyRef:
+                name: '{{ illumio_kubelink_secret_name }}'
+                key: ignore_cert
+                optional: true
+          - name: DEBUG_LEVEL
+            valueFrom:
+              secretKeyRef:
+                name: '{{ illumio_kubelink_secret_name }}'
+                key: log_level
+                optional: true
