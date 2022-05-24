@@ -1,7 +1,5 @@
 # Ansible Collection - illumio.illumio  
 
-**Table of Contents**
-
 - [Overview](#overview)
 - [Installation](#installation)
     - [Requirements](#requirements)
@@ -22,16 +20,23 @@ The collection provides Ansible plugins and roles to automate Virtual Enforcemen
 ### Roles
 
 - [ven](docs/VEN_ROLE.md)
-- [ven_library](docs/VEN_LIBRARY_ROLE.md)
+- [kubelink](docs/KUBELINK_ROLE.md)
 
 ## Installation  
 
 ### Requirements  
 
+This collection has been tested against Ansible **2.9+**.  
+
+Python version **3.6** or higher is required for this collection.
+
+> **Note:** the minimum Python version has been bumped to **3.8** as of Ansible version **2.11+**
+
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. The `illumio.illumio` collection depends on the following collections:  
 
-- ansible.windows
-- community.general
+- `community.general`
+- `ansible.windows`
+- `kubernetes.core`
 
 > **Note:** these dependencies are specified in `galaxy.xml` and will automatically be installed along with the `illumio.illumio` collection  
 
