@@ -19,4 +19,13 @@ dependencies:
   kubernetes.core: '*'
 repository: https://github.com/dsommerville-illumio/illumio-ansible
 build_ignore:
+  - '.github'
+  - '.gitignore'
+  - '.yamllint'
+  - 'Makefile'
   - '*.tar.gz'
+  - 'build'
+  - 'dist'
+  - 'local'
+  - 'venv'
+  - 'molecule'
