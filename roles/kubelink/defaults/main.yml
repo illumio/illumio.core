@@ -10,5 +10,5 @@ illumio_kubelink_secret_name: "illumio-kubelink-config"
 illumio_kubelink_ignore_cert: "false"
 illumio_kubelink_log_level: "1"
 
-illumio_kubelink_container_name: "kubelink/illumio-kubelink"
+illumio_kubelink_container_name: "illumio-kubelink"
 illumio_kubelink_container_version: "latest"
