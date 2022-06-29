@@ -23,6 +23,7 @@ build_ignore:
   - '.gitignore'
   - '.yamllint'
   - 'Makefile'
+  - '*.env'
   - '*.tar.gz'
   - 'build'
   - 'dist'
