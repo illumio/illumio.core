@@ -14,11 +14,6 @@ __pycache__/
 # test folders
 .tox/
 .pytest_cache/
-tests/output/
-
-# test files
-tests/integration/integration_config.yml
-tests/*/inventory
 
 # coverage
 .coverage
