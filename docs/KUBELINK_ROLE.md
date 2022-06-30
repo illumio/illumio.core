@@ -40,10 +40,10 @@ You can install this role with: `ansible-galaxy install illumio.illumio.kubelink
 
 You must have an existing container repository containing the Kubelink Docker image. See the [Kubelink documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm?Highlight=kubelink) for details.  
 
-The `kubernetes.core.k8s` collection requires the `kubernetes` and `kubernetes-validate` python modules to be installed:  
+The `kubernetes.core.k8s` collection requires the `kubernetes` python modules to be installed **on both the Ansible host and the Kubernetes/OpenShift nodes**:  
 
 ```sh
-pip install kubernetes kubernetes-validate
+pip install kubernetes
 ```
 
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. For this role, make sure the following collections are installed:  
@@ -68,6 +68,8 @@ Variable | Description | Default value
 
 ### Kubelink
 
+> **NOTE:** in addition to the configuration below, the [`kubernetes.core`](https://docs.ansible.com/ansible/latest/collections/kubernetes/core/index.html) modules used by this role use environment variable configuration for any custom authentication or connection details needed for your cluster. See the [`kubernetes.core.k8s` documentation](https://docs.ansible.com/ansible/latest/collections/kubernetes/core/k8s_module.html#ansible-collections-kubernetes-core-k8s-module) for details on configuring authentication, proxies, or client certificates for your cluster.  
+
 If a Kubelink secret exists in the cluster, Container Cluster creation will be skipped and the existing values will be used for the connection. See the Illumio [guide on deploying Kubelink](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm) for details on the secret file.  
 
 Variable | Description | Default value
@@ -75,11 +77,11 @@ Variable | Description | Default value
 `illumio_kubelink_namespace` | Kubernetes/OpenShift namespace for Kubelink config | `illumio-system`  
 `illumio_kubelink_secret_name` | Kubelink Secret name | `illumio-kubelink-config`  
 `illumio_kubelink_ignore_cert` | Set to true if using a self-signed certificate for an on-prem PCE | `false`  
-`illumio_kubelink_log_level` | Kubelink log level; `0` for debug, `1` for info, `2` for warn, or `3` for error. | `1`
+`illumio_kubelink_log_level` | Kubelink log level; `0` for debug, `1` for info, `2` for warn, or `3` for error | `1`
 `illumio_kubelink_container_registry` | Container registry the Kubelink image will be pulled from. Registry secrets must be set up in Kubernetes/OpenShift independent of this role | -
-`illumio_kubelink_image_pull_secret` | imagePullSecret name to authenticate against a remote image registry | -
-`illumio_kubelink_container_name` | Kubelink container name. | `kubelink/illumio-kubelink`
-`illumio_kubelink_container_version` | image tag version to pull. | `latest`
+`illumio_kubelink_image_pull_secret` | imagePullSecret name for authentication to a remote image registry | -
+`illumio_kubelink_container_name` | Kubelink container name | `illumio-kubelink`
+`illumio_kubelink_container_version` | image tag version to pull | `latest`
 
 > **Note:** if using self-signed or private PKI to sign a host PCE certificate, you will need to update the Kubelink deployment to reference the root CA certificate. See [the Kubelink deployment documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm#DeployKubelink) for details  
 
@@ -89,12 +91,8 @@ By default, a new container cluster with a randomized suffix will be created (e.
 
 Variable | Description | Default value
 -------- | ----------- | -------------
-`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using either `illumio_container_cluster_id` or `illumio_container_cluster_name` | -
-`illumio_container_cluster_id` | Existing container cluster ID | -
+`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | -
 `illumio_container_cluster_name` | Existing container cluster name | -
-
-## Tags  
-
 
 ## License  
 
