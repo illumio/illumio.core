@@ -1,0 +1,378 @@
+---
+- name: Set randomly generated pairing profile name
+  ansible.builtin.set_fact:
+    pairing_profile_name: "{{ integration_prefix }}-PP-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+
+- name: Test check mode for pairing profile creation
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for a new pairing profile is successful and indicates a change
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile['name'] == pairing_profile_name
+
+- name: Test pairing profile creation
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that the pairing profile was created successfully and default values are set
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile['enforcement_mode'] == 'idle'
+      - result.pairing_profile['enforcement_mode_lock']
+      - result.pairing_profile['visibility_level'] == 'flow_summary'
+      - result.pairing_profile['visibility_level_lock']
+      - result.pairing_profile['key_lifespan'] == 'unlimited'
+      - result.pairing_profile['allowed_uses_per_key'] == 'unlimited'
+      - result.pairing_profile['allowed_uses_per_key']
+      - result.pairing_profile['labels'] == []
+      - result.pairing_profile['role_label_lock']
+      - result.pairing_profile['app_label_lock']
+      - result.pairing_profile['env_label_lock']
+      - result.pairing_profile['loc_label_lock']
+      - result.pairing_profile['agent_software_release'] is match('^Default')
+
+- name: Store pairing profile HREF
+  ansible.builtin.set_fact:
+    pairing_profile_href: "{{ result.pairing_profile['href'] }}"
+
+- name: Test check mode for referencing present pairing profile using HREF
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    href: "{{ pairing_profile_href }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for a pairing profile referenced by HREF with identical values returns successfully with no changes
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: Test that pairing profiles can be referenced by HREF
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    href: "{{ pairing_profile_href }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that a pairing profile referenced by HREF with identical values returns successfully with no changes
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: Test invalid enforcement_mode value
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    href: "{{ pairing_profile_href }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enforcement_mode: invalid_value
+    enabled: yes
+    state: present
+  ignore_errors: yes
+  register: result
+
+- name: Assert that passing an invalid enforcement_mode value causes the module to fail with the expected error message
+  ansible.builtin.assert:
+    that:
+      - result is failed
+      - "result.msg == 'value of enforcement_mode must be one of: idle, visibility_only, selective, full, got: invalid_value'"
+
+- name: Test invalid visibility_level value
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    href: "{{ pairing_profile_href }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    visibility_level: invalid_value
+    enabled: yes
+    state: present
+  ignore_errors: yes
+  register: result
+
+- name: Assert that passing an invalid visibility_level value causes the module to fail with the expected error message
+  ansible.builtin.assert:
+    that:
+      - result is failed
+      - "result.msg == 'value of visibility_level must be one of: flow_summary, flow_drops, flow_off, enhanced_data_collection, got: invalid_value'"
+
+- name: Test check mode for present pairing profile without changes
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for a present pairing profile with identical values returns successfully with no changes
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: Test present pairing profile without changes
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Test pairing profile
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that referencing a present pairing profile with identical values returns successfully with no changes
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: Test check mode for pairing profile update
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Updated description
+    enabled: yes
+    state: present
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for a pairing profile update returns successfully with updates
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: Test pairing profile update
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Updated description
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that a pairing profile update returns successfully with updated values
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile['description'] == 'Updated description'
+
+- name: Test check mode for pairing key generation
+  pairing_key:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    pairing_profile_href: "{{ pairing_profile_href }}"
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for pairing key generation returns successfully with an empty key
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_key == ''
+
+- name: Test pairing key generation
+  pairing_key:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    pairing_profile_href: "{{ pairing_profile_href }}"
+  register: result
+
+- name: Assert that pairing key generation returns successfully with a non-empty key
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_key | length > 0
+
+- name: Test disable pairing profile
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Updated description
+    enabled: no
+    state: present
+  register: result
+
+- name: Assert that setting enabled to 'no' reflects correctly in the profile object
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - not result.pairing_profile['enabled']
+
+- name: Test set pairing profile key lifespan
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Updated description
+    key_lifespan: 120
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that setting an integer value for key_lifespan is successful
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile['key_lifespan'] == 120
+
+- name: Test set pairing profile uses per key
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    description: Updated description
+    allowed_uses_per_key: 1
+    enabled: yes
+    state: present
+  register: result
+
+- name: Assert that setting an integer value for allowed_uses_per_key is successful
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile['key_lifespan'] == 'unlimited'
+      - result.pairing_profile['allowed_uses_per_key'] == 1
+
+- name: Test check mode for pairing profile deletion
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    state: absent
+  check_mode: yes
+  register: result
+
+- name: Assert that check mode for absent state returns successfully
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: Test pairing profile deletion
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ pairing_profile_name }}"
+    state: absent
+  register: result
+
+- name: Assert that setting absent state returns successfully with an empty object
+  ansible.builtin.assert:
+    that:
+      - result is success
+      - result is changed
+      - result.pairing_profile == {}
+
+- name: Test that the pairing profile has been removed
+  pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    href: "{{ pairing_profile_href }}"
+    state: present
+  check_mode: yes
+  ignore_errors: yes
+  register: result
+
+- name: Assert that passing an invalid HREF causes the module to fail with the expected error message
+  ansible.builtin.assert:
+    that:
+      - result is failed
+      - "result.msg == 'Failed to get PCE object with HREF {{ pairing_profile_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ pairing_profile_href }}'"

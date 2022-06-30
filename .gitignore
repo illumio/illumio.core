@@ -16,6 +16,10 @@ __pycache__/
 .pytest_cache/
 tests/output/
 
+# test files
+tests/integration/integration_config.yml
+tests/*/inventory
+
 # coverage
 .coverage
 coverage.xml

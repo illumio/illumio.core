@@ -1,6 +1,6 @@
 # Ansible Collection - illumio.illumio  
 
-**Table of Contents**
+> **NOTE:** this collection is currently under development, and is not yet available through Galaxy or Ansible Automation Platform. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
 
 - [Overview](#overview)
 - [Installation](#installation)
@@ -19,19 +19,47 @@ The collection provides Ansible plugins and roles to automate Virtual Enforcemen
 
 ## Collection Contents  
 
-### Roles
+### Modules  
+
+- [pairing_profile](plugins/modules/pairing_profile.py)
+- [pairing_key](plugins/modules/pairing_key.py)
+- [container_cluster](plugins/modules/container_cluster.py)
+
+### Roles  
 
 - [ven](docs/VEN_ROLE.md)
-- [ven_library](docs/VEN_LIBRARY_ROLE.md)
+- [cven](docs/CVEN_ROLE.md)
+- [kubelink](docs/KUBELINK_ROLE.md)
 
 ## Installation  
 
 ### Requirements  
 
+**Python**  
+
+For most components, you will need the `illumio` Python library:
+
+```sh
+$ pip install illumio
+```
+
+> **NOTE:** the modules in this collection require `illumio` version **1.0.1** or higher  
+
+Python version **3.6** or higher is required for this collection.  
+
+> **Note:** the minimum Python version has been bumped to **3.8** as of Ansible version **2.11**  
+
+**Ansible**  
+
+This collection works with Ansible versions **2.9** and above.  
+
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. The `illumio.illumio` collection depends on the following collections:  
 
-- ansible.windows
-- community.general
+> **Note:** individual modules may have additional requirements beyond these - see the documentation linked in the [Collection Contents](#collection-contents) section above for installation details and requirements.  
+
+- `community.general`
+- `ansible.windows`
+- `kubernetes.core`
 
 > **Note:** these dependencies are specified in `galaxy.xml` and will automatically be installed along with the `illumio.illumio` collection  
 
@@ -41,6 +69,63 @@ You can install this collection from Ansible Galaxy using the CLI:
 
 ```sh
 ansible-galaxy collection install illumio.illumio
+```
+
+## Usage  
+
+> **NOTE:** these are not fully working examples. See the documentation linked in the [Collection Contents](#collection-contents) section above for usage details for specific modules and roles.  
+
+### Modules  
+
+```yml
+---
+- name: Use the pairing_profile module
+  hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Create pairing profile
+    illumio.illumio.pairing_profile:
+      name: PP-ANSIBLE
+      enabled: yes
+      state: present
+    register: profile_result
+
+  - name: Generate pairing key
+    illumio.illumio.pairing_key:
+      pairing_profile_href: "{{ profile_result.pairing_profile['href'] }}"
+    register: result
+
+  - debug:
+      var: result.pairing_key
+```
+
+### Roles  
+
+After downloading the collection or an individual role, you can run them individually using the fully-qualified name:
+
+```yml
+---
+- name: Pair VEN using the illumio collection
+  hosts: localhost
+  roles:
+    - role: illumio.illumio.ven
+      illumio_pce_hostname: my.pce.com
+      ...
+```
+
+Or by specifying `illumio.illumio` in the `collections` field and using the role name as below:
+
+```yml
+---
+- name: Pair VEN using the illumio collection
+  hosts: localhost
+  collections:
+    - illumio.illumio
+
+  roles:
+    - role: ven
+      illumio_pce_hostname: my.pce.com
+      ...
 ```
 
 ## Support  
