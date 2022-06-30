@@ -91,7 +91,7 @@ def main():
     )
 
     if module.check_mode:
-        module.exit_json(changed=False, pairing_key='')
+        module.exit_json(changed=True, pairing_key='')
 
     pairing_key_api = PairingKeyApi(module)
 
