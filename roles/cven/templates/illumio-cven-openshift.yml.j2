@@ -1,0 +1,118 @@
+#
+# Copyright 2022 Illumio, Inc. All Rights Reserved.
+#
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: illumio-ven
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - pods
+  - pods/status
+  verbs:
+  - list
+  - get
+  - patch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: illumio-ven
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: illumio-ven
+subjects:
+- kind: ServiceAccount
+  name: illumio-ven
+  namespace: {{ illumio_cven_namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: illumio-ven
+  namespace: {{ illumio_cven_namespace }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: illumio-ven
+  namespace: {{ illumio_cven_namespace }}
+  labels:
+    k8s-app: illumio-ven
+spec:
+  selector:
+    matchLabels:
+      name: illumio-ven
+  template:
+    metadata:
+      labels:
+        name: illumio-ven
+    spec:
+      serviceAccountName: illumio-ven
+{% if illumio_cven_image_pull_secret is defined %}
+      imagePullSecrets:
+      - name: {{ illumio_cven_image_pull_secret }}
+{% endif %}
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+        - name: illumio-ven
+          env:
+            - name: ILO_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ illumio_cven_secret_name }}
+                  key: ilo_server
+            - name: ILO_CODE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ illumio_cven_secret_name }}
+                  key: ilo_code
+          command: ["/ven-init", "activate"]
+          image: '{{ illumio_cven_container_registry ~ '/' if illumio_cven_container_registry is defined and illumio_cven_container_registry|length | default('', true) }}{{ illumio_cven_container_name }}:{{ illumio_cven_container_version }}'
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN", "SYS_MODULE", "SYS_ADMIN"]
+            privileged: true
+          volumeMounts:
+            - name: unixsocks
+              mountPath: /var/run/
+            - name: illumio-ven-data
+              mountPath: /opt/illumio_ven_data
+            - name: modules
+              mountPath: /lib/modules
+              readOnly: true
+            - name: machine-id
+              mountPath: /etc/machine-id
+              readOnly: true
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: unixsocks
+          hostPath:
+            path: /var/run/
+            type: Directory
+        - name: illumio-ven-data
+          hostPath:
+            path: /opt/illumio_ven_data
+            type: DirectoryOrCreate
+        - name: modules
+          hostPath:
+            path: /lib/modules
+            type: Directory
+        - name: machine-id
+          hostPath:
+            path: /etc/machine-id
+            type: File

@@ -1,0 +1,38 @@
+---
+galaxy_info:
+  role_name: cven
+  author: Duncan Sommerville
+  description: Install CVEN instances to container orchestration platforms
+  company: Illumio
+  license: license (Apache)
+  min_ansible_version: '2.9'
+  platforms:
+    - name: Amazon
+      versions:
+        - all
+    - name: Amazon Linux 2
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bullseye
+        - buster
+        - stretch
+    - name: EL
+      versions:
+        - '8'
+        - '7'
+    - name: Ubuntu
+      versions:
+        - hirsute
+        - groovy
+        - focal
+        - bionic
+        - xenial
+  galaxy_tags:
+    - illumio
+    - cven
+    - network
+    - security
+dependencies:
+  - role: kubelink

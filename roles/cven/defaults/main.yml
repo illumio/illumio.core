@@ -1,0 +1,20 @@
+---
+# pce connection defaults
+illumio_pce_hostname: "{{ lookup('env', 'ILLUMIO_PCE_HOST') | default(omit) }}"
+illumio_pce_port: "{{ lookup('env', 'ILLUMIO_PCE_PORT') | default('443') }}"
+illumio_pce_org_id: "{{ lookup('env', 'ILLUMIO_PCE_ORG_ID') | default('1') }}"
+illumio_pce_api_key: "{{ lookup('env', 'ILLUMIO_API_KEY_USERNAME') | default(omit) }}"
+illumio_pce_api_secret: "{{ lookup('env', 'ILLUMIO_API_KEY_SECRET') | default(omit) }}"
+
+illumio_cven_namespace: "illumio-system"
+illumio_cven_secret_name: "illumio-ven-config"
+
+illumio_cven_container_name: "illumio-ven"
+illumio_cven_container_version: "latest"
+
+# pairing profile
+illumio_cven_profile_name: "PP-ANSIBLE-CVEN"
+illumio_cven_profile_description: "CVEN cluster host profile. Created by Ansible"
+illumio_cven_enforcement_mode: "idle"
+illumio_cven_visibility_level: "flow_summary"
+illumio_cven_labels: []
