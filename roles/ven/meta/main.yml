@@ -5,22 +5,22 @@ galaxy_info:
   description: Pair or unpair VENs to the Illumio Policy Compute Engine
   company: Illumio
   license: license (Apache)
-  min_ansible_version: 2.9
+  min_ansible_version: '2.9'
   platforms:
     # see https://support.illumio.com/software/os-support-package-dependencies/ven.html
     - name: AIX
       versions:
-        - 7.1
-        - 6.1
+        - '7.1'
+        - '6.1'
     - name: Amazon
       versions:
-        - 2018.03
-        - 2017.03
-        - 2016.09
-        - 2016.03
+        - '2018.03'
+        - '2017.03'
+        - '2016.09'
+        - '2016.03'
     - name: Amazon Linux 2
       versions:
-        - any
+        - all
     - name: Debian
       versions:
         - bullseye
@@ -30,21 +30,21 @@ galaxy_info:
         - wheezy
     - name: EL
       versions:
-        - 8
-        - 7
-        - 6
+        - '8'
+        - '7'
+        - '6'
     - name: SLES
       versions:
-        - 15
-        - 12
-        - 11SP4
-        - 11SP3
+        - '15'
+        - '12'
+        - '11SP4'
+        - '11SP3'
     - name: Solaris
       versions:
-        - 11.3
-        - 11.2
-        - 11.1
-        - 10
+        - '11.3'
+        - '11.2'
+        - '11.1'
+        - '10'
     - name: Ubuntu
       versions:
         - hirsute
@@ -56,10 +56,10 @@ galaxy_info:
         - precise
     - name: Windows
       versions:
-        - 2019
-        - 2016
-        - 2012R2
-        - 2012
+        - '2019'
+        - '2016'
+        - '2012R2'
+        - '2012'
   galaxy_tags:
     - illumio
     - ven
