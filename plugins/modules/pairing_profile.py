@@ -268,11 +268,13 @@ pairing_profile:
                     "href": "/users/1"
                 }
         caps:
-            description: The pairing profile capabilities.
+            description:
+                - Array of permissions on the entity held by the requesting user.
+                - An empty array implies readonly permission.
             type: list
+            elements: str
+            default: []
             returned: always
-            sample:
-                "caps": ["write", "generate_pairing_key"]
 
     sample: {
         "href": "/orgs/1/pairing_profiles/1500",
@@ -308,58 +310,18 @@ pairing_profile:
     }
 '''
 
-import json
 import re
 
-from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceApiBase, pce_connection_spec  # type: ignore
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
 
 from illumio.workloads import PairingProfile
-from illumio.exceptions import IllumioApiException
-from illumio.util import IllumioEncoder
 
 
-class PairingProfileApi(PceApiBase):
-    def get_profile_by_href(self, href):
-        try:
-            return self._pce.pairing_profiles.get_by_reference(href)
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to get pairing profile with HREF %s: %s" % (href, e))
-
-    def get_profile_by_name(self, name):
-        try:
-            profiles = self._pce.pairing_profiles.get(params={'name': name, 'max_results': 1})
-            if not profiles:
-                return None
-            return profiles[0]
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to get pairing profile with name %s: %s" % (name, e))
-
-    def create_profile(self, profile):
-        try:
-            return self._pce.pairing_profiles.create(profile)
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to create pairing profile: %s" % (e))
-
-    def update_profile(self, remote_profile, profile):
-        if not remote_profile or not remote_profile.href:
-            self._module.fail_json(msg="Failed to update pairing profile: invalid remote profile")
-        if self.params_match(remote_profile):
-            return False
-        try:
-            self._pce.pairing_profiles.update(remote_profile.href, profile)
-            return True
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to update pairing profile: %s" % (e))
-
-    def delete_profile(self, profile):
-        if not profile or not profile.href:
-            return False
-        try:
-            self._pce.pairing_profiles.delete(profile.href)
-            return True
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to delete pairing profile: %s" % (e))
+class PairingProfileApi(PceObjectApi):
+    def __init__(self, module: AnsibleModule) -> None:
+        super().__init__(module)
+        self._api = self._pce.pairing_profiles
 
     def params_match(self, profile):
         ignore_params = ['href', 'state', 'labels', 'ven_version']
@@ -375,28 +337,22 @@ class PairingProfileApi(PceApiBase):
         return remote_labels == new_labels
 
     def _compare_ven_version(self, profile):
-        remote_ven_version = getattr(profile, 'agent_software_release', '')
         new_ven_version = self._module.params.get('ven_version')
+        if not new_ven_version:  # if no version is specified in the module, skip
+            return True
+        remote_ven_version = getattr(profile, 'agent_software_release', '')
         match = re.match('^(?:Default \()?([a-zA-Z0-9\.-]+)\)?$', remote_ven_version)
-        if new_ven_version:
-            # if a version is specified in the module, check if it matches the remote
-            if match and match.group(1) != new_ven_version:
-                return False
-        elif remote_ven_version and not remote_ven_version.startswith('Default'):
-            # if no version is specified, and the remote is not set to the default,
-            # update to the default version
+        # if a version is specified in the module, check if it matches the remote
+        if match and match.group(1) != new_ven_version:
             return False
         return True
-
-    def json_output(self, profile):
-        return json.loads(json.dumps(profile, cls=IllumioEncoder))
 
 
 def spec():
     return dict(
         href=dict(type='str'),
         name=dict(type='str'),
-        # if no description is provided when creating a prrofile, the PCE will
+        # if no description is provided when creating a profile, the PCE will
         # set the description to an empty string rather than a null value.
         # defaulting to an empty string ensures that comparisons behave as
         # expected when determining whether an update is needed.
@@ -453,9 +409,6 @@ def main():
         supports_check_mode=True
     )
 
-    if module.check_mode:
-        module.exit_json(changed=False, pairing_profile={})
-
     pairing_profile_api = PairingProfileApi(module)
 
     href = module.params.get('href')
@@ -478,12 +431,18 @@ def main():
     external_data_set = module.params.get('external_data_set')
     external_data_reference = module.params.get('external_data_reference')
 
+    # the allowed_uses_per_key and key_lifespan fields default to 'unlimited'
+    # but otherwise must be passed as integers. convert any numeric values
+    # passed to integers
+    allowed_uses_per_key = int(allowed_uses_per_key) if allowed_uses_per_key.isnumeric() else allowed_uses_per_key
+    key_lifespan = int(key_lifespan) if key_lifespan.isnumeric() else key_lifespan
+
     if href:
-        existing_profile = pairing_profile_api.get_profile_by_href(href)
+        existing_profile = pairing_profile_api.get_by_href(href)
         if not existing_profile:
             module.fail_json("No pairing profile found with HREF %s" % (href))
     elif name:
-        existing_profile = pairing_profile_api.get_profile_by_name(name)
+        existing_profile = pairing_profile_api.get_by_name(name)
 
     if state == 'present':
         new_profile = PairingProfile(
@@ -506,14 +465,25 @@ def main():
             external_data_reference=external_data_reference
         )
 
+        if module.check_mode:
+            if not existing_profile:
+                module.exit_json(changed=True, pairing_profile=pairing_profile_api.json_output(new_profile))
+            module.exit_json(
+                changed=not pairing_profile_api.params_match(existing_profile),
+                pairing_profile=pairing_profile_api.json_output(new_profile)
+            )
+
         if not existing_profile:
-            profile = pairing_profile_api.create_profile(new_profile)
+            profile = pairing_profile_api.create(new_profile)
             changed = True
         else:
-            changed = pairing_profile_api.update_profile(existing_profile, new_profile)
-            profile = pairing_profile_api.get_profile_by_href(existing_profile.href) if changed else existing_profile
+            changed = pairing_profile_api.update(existing_profile, new_profile)
+            profile = pairing_profile_api.get_by_href(existing_profile.href) if changed else existing_profile
     elif state == 'absent':
-        changed = pairing_profile_api.delete_profile(existing_profile)
+        if module.check_mode:
+            module.exit_json(changed=True, pairing_profile={})
+
+        changed = pairing_profile_api.delete(existing_profile)
         profile = {}
 
     module.exit_json(changed=changed, pairing_profile=pairing_profile_api.json_output(profile))
