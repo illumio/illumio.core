@@ -11,29 +11,92 @@
     - include_tasks: pair_windows.yml
       when: ansible_system == 'Windows'
 
-  always:
+  tags:
+    - ven_pair
 
-    - name: "Remove temporary pairing profile"
-      uri:
-        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/pairing_profiles/{{ illumio_pairing_profile_id }}"
-        user: "{{ illumio_pce_api_key }}"
-        password: "{{ illumio_pce_api_secret }}"
-        force_basic_auth: yes
-        method: DELETE
-        status_code: 204
-      no_log: yes
-      ignore_errors: yes
-      when: temporary_profile is defined and temporary_profile
-      tags:
-        - always
+- name: "Start VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl start"
+  register: result
+  changed_when: "'already started' not in result.stdout"
+  tags:
+    - never
+    - ven_start
 
-  when: not illumio_ven_unpair
+- name: "Stop VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl stop"
+  register: result
+  changed_when: "'FAILED' not in result.stdout"
+  tags:
+    - never
+    - ven_stop
 
-- name: "VEN | Unpair"
+- name: "Restart VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl restart"
+  register: result
+  changed_when: result.rc == 0
+  tags:
+    - never
+    - ven_restart
+
+- name: "Suspend the VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl suspend"
+  register: result
+  changed_when: "'The VEN has been suspended' in result.stdout"
+  tags:
+    - never
+    - ven_suspend
+
+- name: "Unsuspend VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl unsuspend"
+  register: result
+  changed_when: "'The VEN has been unsuspended' in result.stdout"
+  tags:
+    - never
+    - ven_unsuspend
+
+- name: "Deactivate VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl deactivate"
+  register: result
+  changed_when: "'The VEN has been deactivated' in result.stdout"
+  tags:
+    - never
+    - ven_deactivate
+
+- name: "Unpair VEN"
+  become: yes
+  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl unpair {{ illumio_ven_firewall_restore }}"
+  register: result
+  changed_when: result.rc == 0
+  tags:
+    - never
+    - ven_unpair
+
+- name: "Stat VEN control tool"
+  become: yes
+  ansible.builtin.stat:
+    path: /opt/illumio_ven/illumio-ven-ctl
+  register: ven_cli
+  tags: always
+
+- name: "Check VEN status"
   block:
 
-    - name: "Unpair VEN"
-      become: true
-      shell: "/opt/illumio_ven/illumio-ven-ctl unpair {{ illumio_ven_firewall_restore }}"
+    - name: "Get VEN status"
+      become: yes
+      ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl status"
+      failed_when: ven_status.rc > 1
+      register: ven_status
+      changed_when: False
 
-  when: illumio_ven_unpair
+    - name: "Print VEN status"
+      ansible.builtin.debug:
+        var: ven_status.stdout_lines
+
+  when: ven_cli.stat.exists
+  tags: always
