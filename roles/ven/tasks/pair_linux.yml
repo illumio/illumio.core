@@ -6,33 +6,28 @@
   block:
 
     - name: "Remove VEN data temp directory"
-      file:
+      ansible.builtin.file:
         path: /opt/illumio_ven_data/tmp
         state: absent
 
-    - name: "Set umask"
-      shell: umask 0026 && umask
-
     - name: "Recreate VEN data temp directory"
-      file:
+      ansible.builtin.file:
         path: /opt/illumio_ven_data/tmp
         state: directory
+        mode: 0751
 
     - name: "Download pairing script"
-      uri:
+      ansible.builtin.uri:
         url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v18/software/ven/image?pair_script=pair.sh&profile_id={{ illumio_pairing_profile_id }}"
         method: GET
         dest: /opt/illumio_ven_data/tmp/pair.sh
-
-    - name: "Update pairing script permissions"
-      file:
-        dest: /opt/illumio_ven_data/tmp/pair.sh
-        mode: +x
+        mode: 0751
 
     - name: "Run pairing script"
-      shell: "/opt/illumio_ven_data/tmp/pair.sh --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }} --activation-code {{ illumio_pairing_key }}"
+      ansible.builtin.command: "/opt/illumio_ven_data/tmp/pair.sh --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }} --activation-code {{ illumio_pairing_key }}"
       register: pairing_output
+      changed_when: pairing_output.rc == 0
 
     - name: "Pairing script output"
-      debug:
+      ansible.builtin.debug:
         var: pairing_output.stdout_lines
