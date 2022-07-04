@@ -38,9 +38,11 @@ You can install this role with: `ansible-galaxy install illumio.illumio.kubelink
 
 ### Requirements  
 
+This module requires Python 3.6+ and the `illumio` python package.  
+
 You must have an existing container repository containing the Kubelink Docker image. See the [Kubelink documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm?Highlight=kubelink) for details.  
 
-The `kubernetes.core.k8s` collection requires the `kubernetes` python modules to be installed **on both the Ansible host and the Kubernetes/OpenShift nodes**:  
+The `kubernetes.core.k8s` collection requires the `kubernetes` python module to be installed **on both the Ansible host and the Kubernetes/OpenShift nodes**:  
 
 ```sh
 pip install kubernetes
@@ -52,7 +54,7 @@ In Ansible 2.10 and higher, modules have been moved into collections. Additional
 ansible-galaxy collection install kubernetes.core.k8s
 ```
 
-> **Note:** these dependencies are included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
+> **Note:** the `kubernetes.core.k8s` dependency is included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
 
 ## Role Variables  
 
