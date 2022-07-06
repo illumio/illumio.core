@@ -1,13 +1,17 @@
 ---
-# ven role defaults
-illumio_pce_port: 443
-illumio_pce_org_id: 1
+# pce connection defaults
+illumio_pce_hostname: "{{ lookup('env', 'ILLUMIO_PCE_HOST') | default(omit) }}"
+illumio_pce_port: "{{ lookup('env', 'ILLUMIO_PCE_PORT') | default('443') }}"
+illumio_pce_org_id: "{{ lookup('env', 'ILLUMIO_PCE_ORG_ID') | default('1') }}"
+illumio_pce_api_key: "{{ lookup('env', 'ILLUMIO_API_KEY_USERNAME') | default(omit) }}"
+illumio_pce_api_secret: "{{ lookup('env', 'ILLUMIO_API_KEY_SECRET') | default(omit) }}"
 
 # pairing profile
+illumio_ven_profile_name: PP-ANSIBLE-VEN
+illumio_ven_profile_description: "Ansible VEN role pairing profile"
 illumio_ven_enforcement_mode: idle
 illumio_ven_visibility_level: flow_summary
-illumio_ven_log_traffic: true
+illumio_ven_labels: []
 
-# teardown
-illumio_ven_unpair: false
+# unpair
 illumio_ven_firewall_restore: recommended

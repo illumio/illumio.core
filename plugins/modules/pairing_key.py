@@ -11,7 +11,10 @@ DOCUMENTATION = r'''
 ---
 module: pairing_key
 short_description: Generate pairing key from an Illumio PCE pairing profile
-description: This module allows you to generate pairing keys on the Illumio PCE that can be used to pair Illumio VEN agents
+description:
+  - This module allows you to generate pairing keys on the Illumio PCE that can be used to pair Illumio VEN agents
+  - Supports check mode.
+
 author:
   - Duncan Sommerville (@dsommerville-illumio)
 requirements:
@@ -20,12 +23,12 @@ requirements:
 version_added: "0.2.0"
 
 options:
-    pairing_profile_name:
-        description: Name of an existing pairing profile.
-        type: str
-    pairing_profile_href:
-        description: HREF of an existing pairing profile.
-        type: str
+  pairing_profile_name:
+    description: Name of an existing pairing profile.
+    type: str
+  pairing_profile_href:
+    description: HREF of an existing pairing profile.
+    type: str
 
 extends_documentation_fragment:
   - illumio.illumio.pce

@@ -4,7 +4,7 @@ name: illumio
 version: 0.2.0
 readme: README.md
 authors:
-- Duncan Sommerville <duncan.sommerville@illumio.com>
+  - Duncan Sommerville (@dsommerville-illumio)
 description: Ansible collection for managing resources in the Illumio Policy Compute Engine
 license:
   - Apache-2.0
