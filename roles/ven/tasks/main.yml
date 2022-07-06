@@ -1,5 +1,9 @@
 ---
-# VEN role defaults
+- name: "Fail on unrecognized system"
+  ansible.builtin.fail:
+    msg: "Couldn't recognize remote host OS"
+  when: ansible_system != 'Windows' and ansible_system != 'Linux'
+
 - name: "VEN | Pair"
   block:
 
@@ -14,89 +18,4 @@
   tags:
     - ven_pair
 
-- name: "Start VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl start"
-  register: result
-  changed_when: "'already started' not in result.stdout"
-  tags:
-    - never
-    - ven_start
-
-- name: "Stop VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl stop"
-  register: result
-  changed_when: "'FAILED' not in result.stdout"
-  tags:
-    - never
-    - ven_stop
-
-- name: "Restart VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl restart"
-  register: result
-  changed_when: result.rc == 0
-  tags:
-    - never
-    - ven_restart
-
-- name: "Suspend the VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl suspend"
-  register: result
-  changed_when: "'The VEN has been suspended' in result.stdout"
-  tags:
-    - never
-    - ven_suspend
-
-- name: "Unsuspend VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl unsuspend"
-  register: result
-  changed_when: "'The VEN has been unsuspended' in result.stdout"
-  tags:
-    - never
-    - ven_unsuspend
-
-- name: "Deactivate VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl deactivate"
-  register: result
-  changed_when: "'The VEN has been deactivated' in result.stdout"
-  tags:
-    - never
-    - ven_deactivate
-
-- name: "Unpair VEN"
-  become: yes
-  ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl unpair {{ illumio_ven_firewall_restore }}"
-  register: result
-  changed_when: result.rc == 0
-  tags:
-    - never
-    - ven_unpair
-
-- name: "Stat VEN control tool"
-  become: yes
-  ansible.builtin.stat:
-    path: /opt/illumio_ven/illumio-ven-ctl
-  register: ven_cli
-  tags: always
-
-- name: "Check VEN status"
-  block:
-
-    - name: "Get VEN status"
-      become: yes
-      ansible.builtin.command: "/opt/illumio_ven/illumio-ven-ctl status"
-      failed_when: ven_status.rc > 1
-      register: ven_status
-      changed_when: False
-
-    - name: "Print VEN status"
-      ansible.builtin.debug:
-        var: ven_status.stdout_lines
-
-  when: ven_cli.stat.exists
-  tags: always
+- include_tasks: manage_ven.yml
