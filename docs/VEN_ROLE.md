@@ -122,6 +122,14 @@ The workload remains visible in the PCE, but updates to suspended state. This mo
 
 Removes the VEN from a suspended state: the VEN software is started and firewall rules are reapplied according to security policy rules in the PCE.  
 
+### ven_deactivate
+
+Breaks the connection between the VEN and the PCE, but leaves the VEN software installed on the workload.  
+
+After the VEN is deactivated, the workload firewall is restored to its previous settings.  
+
+> **Note:** this action is **irreversible** through the VEN role. To reactivate the VEN, you will need run `illumio_ven_ctl activate` manually or unpair and repair the workload  
+
 ### ven_unpair  
 
 Removes the VEN and corresponding workload record from the PCE and uninstalls the VEN software from the workload.  
