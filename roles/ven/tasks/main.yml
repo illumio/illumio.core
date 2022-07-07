@@ -19,3 +19,5 @@
     - ven_pair
 
 - include_tasks: manage_ven.yml
+  tags:
+    - always

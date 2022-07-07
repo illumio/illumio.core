@@ -3,11 +3,15 @@
   ansible.builtin.set_fact:
     illumio_ven_ctl: /opt/illumio_ven/illumio-ven-ctl
   when: ansible_system == 'Linux'
+  tags:
+    - always
 
 - name: "Set illumio-ven-ctl path for Windows"
   ansible.builtin.set_fact:
     illumio_ven_ctl: C:\Program Files\Illumio\illumio-ven-ctl.ps1
   when: ansible_system == 'Windows'
+  tags:
+    - always
 
 - name: "Start VEN"
   become: yes
