@@ -1,0 +1,57 @@
+---
+- name: "Create CVEN pairing profile"
+  illumio.illumio.pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ illumio_cven_profile_name }}"
+    description: "{{ illumio_cven_profile_description }}"
+    enabled: yes
+    enforcement_mode: "{{ illumio_cven_enforcement_mode }}"
+    visibility_level: "{{ illumio_cven_visibility_level }}"
+    labels: "{{ illumio_cven_labels | list }}"
+    ven_version: "{{ illumio_cven_ven_version | default(omit) }}"
+    state: present
+  register: pairing_profile_result
+
+- name: "Generate pairing key"
+  illumio.illumio.pairing_key:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    pairing_profile_href: "{{ pairing_profile_result.pairing_profile['href'] }}"
+  register: pairing_key_result
+
+- name: "Set pairing key"
+  ansible.builtin.set_fact:
+    illumio_pairing_key: "{{ pairing_key_result.pairing_key }}"
+
+- name: "Check for CVEN secret"
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ illumio_cven_secret_name }}"
+    namespace: "{{ illumio_cven_namespace }}"
+  register: secret_info
+
+- name: "Read CVEN secret"
+  ansible.builtin.set_fact:
+    cven_secret: "{{ secret_info.resources[0] | default('', true) }}"
+
+- name: "Apply CVEN secret"
+  kubernetes.core.k8s:
+    namespace: "{{ illumio_cven_namespace }}"
+    template: "illumio-cven-secret.yml.j2"
+    apply: yes
+  when: cven_secret is not defined or not cven_secret
+
+- name: "Apply CVEN deployment"
+  kubernetes.core.k8s:
+    namespace: "{{ illumio_cven_namespace }}"
+    template: "illumio-cven-{{ cluster_type }}.yml.j2"
+    state: present
+    apply: yes

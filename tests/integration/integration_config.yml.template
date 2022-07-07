@@ -1,0 +1,7 @@
+integration_prefix: integration-ansible
+
+illumio_pce_hostname: ${ILLUMIO_PCE_HOST}
+illumio_pce_port: ${ILLUMIO_PCE_PORT}
+illumio_pce_org_id: ${ILLUMIO_PCE_ORG_ID}
+illumio_pce_api_key: ${ILLUMIO_API_KEY_USERNAME}
+illumio_pce_api_secret: ${ILLUMIO_API_KEY_SECRET}

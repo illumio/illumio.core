@@ -6,12 +6,12 @@ illumio_pce_org_id: "{{ lookup('env', 'ILLUMIO_PCE_ORG_ID') | default('1') }}"
 illumio_pce_api_key: "{{ lookup('env', 'ILLUMIO_API_KEY_USERNAME') | default(omit) }}"
 illumio_pce_api_secret: "{{ lookup('env', 'ILLUMIO_API_KEY_SECRET') | default(omit) }}"
 
-# pairing profile
-illumio_ven_profile_name: PP-ANSIBLE-VEN
-illumio_ven_profile_description: "Ansible VEN role pairing profile"
-illumio_ven_enforcement_mode: idle
-illumio_ven_visibility_level: flow_summary
-illumio_ven_labels: []
+# kubelink
 
-# unpair
-illumio_ven_firewall_restore: recommended
+illumio_kubelink_namespace: "illumio-system"
+illumio_kubelink_secret_name: "illumio-kubelink-config"
+illumio_kubelink_ignore_cert: "false"
+illumio_kubelink_log_level: "1"
+
+illumio_kubelink_container_name: "illumio-kubelink"
+illumio_kubelink_container_version: "latest"

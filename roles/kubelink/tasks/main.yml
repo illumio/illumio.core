@@ -1,0 +1,48 @@
+---
+- name: "Get cluster information"
+  kubernetes.core.k8s_cluster_info:
+  register: api_status
+
+- name: "Set cluster type"
+  ansible.builtin.set_fact:
+    cluster_type: "{{ api_status['version']['server'].keys() | list | first }}"
+
+- name: "Create Kubelink namespace"
+  kubernetes.core.k8s:
+    name: "{{ illumio_kubelink_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: "Check for Kubelink secret"
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ illumio_kubelink_secret_name }}"
+    namespace: "{{ illumio_kubelink_namespace }}"
+  register: secret_info
+
+- name: "Read Kubelink secret"
+  ansible.builtin.set_fact:
+    kubelink_secret: "{{ secret_info.resources[0] | default('', true) }}"
+
+- name: "Set up container cluster and apply Kubelink secret"
+  block:
+
+    - name: "Include container cluster tasks"
+      include_tasks: container_cluster.yml
+
+    - name: "Apply Kubelink secret"
+      kubernetes.core.k8s:
+        namespace: "{{ illumio_kubelink_namespace }}"
+        template: "illumio-kubelink-secret.yml.j2"
+        apply: yes
+
+  when: kubelink_secret is not defined or not kubelink_secret
+
+- name: "Apply Kubelink deployment"
+  kubernetes.core.k8s:
+    namespace: "{{ illumio_kubelink_namespace }}"
+    template: "illumio-kubelink-{{ cluster_type }}.yml.j2"
+    state: present
+    apply: yes

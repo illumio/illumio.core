@@ -1,54 +1,36 @@
 ---
 # set up pairing profile and key
-- name: "Create temporary pairing profile"
-  block:
+- name: "Create or update pairing profile"
+  illumio.illumio.pairing_profile:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    name: "{{ illumio_ven_profile_name }}"
+    description: "{{ illumio_ven_profile_description }}"
+    enforcement_mode: "{{ illumio_ven_enforcement_mode }}"
+    visibility_level: "{{ illumio_ven_visibility_level }}"
+    labels: "{{ illumio_ven_labels | list }}"
+    ven_version: "{{ illumio_ven_version | default(omit) }}"
+    enabled: yes
+    state: present
+  register: pairing_profile_result
 
-    - name: "Create new pairing profile"
-      uri:
-        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/pairing_profiles"
-        user: "{{ illumio_pce_api_key }}"
-        password: "{{ illumio_pce_api_secret }}"
-        force_basic_auth: yes
-        method: POST
-        status_code: 201
-        body_format: json
-        body:
-          name: "PP-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
-          description: "Temporary pairing profile created by Ansible"
-          enabled: true
-          enforcement_mode: "{{ illumio_ven_enforcement_mode }}"
-          visibility_level: "{{ illumio_ven_visibility_level }}"
-          log_traffic: "{{ illumio_ven_log_traffic | bool }}"
-          agent_software_release: "{{ illumio_ven_version | default(omit) }}"
-        headers:
-          Content-Type: application/json
-        return_content: yes
-      no_log: yes
-      register: pairing_profile_response
-
-    - name: "Set pairing profile ID"
-      set_fact:
-        illumio_pairing_profile_id: "{{ pairing_profile_response.json['href'] | split('/') | last }}"
-        temporary_profile: yes
-
-  when: illumio_pairing_profile_id is not defined
+- name: "Set pairing profile ID"
+  ansible.builtin.set_fact:
+    illumio_pairing_profile_id: "{{ pairing_profile_result.pairing_profile['href'] | split('/') | last }}"
 
 - name: "Get new pairing key"
-  uri:
-    url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2/orgs/{{ illumio_pce_org_id }}/pairing_profiles/{{ illumio_pairing_profile_id }}/pairing_key"
-    user: "{{ illumio_pce_api_key }}"
-    password: "{{ illumio_pce_api_secret }}"
-    force_basic_auth: yes
-    method: POST
-    status_code: 201
-    body_format: json
-    body: "{}"
-    headers:
-      Content-Type: application/json
-    return_content: yes
-  no_log: yes
-  register: pairing_key_response
+  illumio.illumio.pairing_key:
+    pce_hostname: "{{ illumio_pce_hostname }}"
+    pce_port: "{{ illumio_pce_port }}"
+    pce_org_id: "{{ illumio_pce_org_id }}"
+    api_key_username: "{{ illumio_pce_api_key }}"
+    api_key_secret: "{{ illumio_pce_api_secret }}"
+    pairing_profile_name: "{{ illumio_ven_profile_name }}"
+  register: pairing_key_result
 
 - name: "Set pairing key"
-  set_fact:
-    illumio_pairing_key: "{{ pairing_key_response.json['activation_code'] }}"
+  ansible.builtin.set_fact:
+    illumio_pairing_key: "{{ pairing_key_result.pairing_key }}"
