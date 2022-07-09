@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.2.2 (July 09, 2022)
+-----------
+
+* fix issues found with `ansible-test sanity`
+
+IMPROVEMENTS:
+
+* update role documentation to include expected data types for role variables
+
 Version 0.2.1 (July 09, 2022)
 -----------
 
