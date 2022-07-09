@@ -1,8 +1,8 @@
 ---
 # pce connection defaults
 illumio_pce_hostname: "{{ lookup('env', 'ILLUMIO_PCE_HOST') | default(omit) }}"
-illumio_pce_port: "{{ lookup('env', 'ILLUMIO_PCE_PORT') | default('443') }}"
-illumio_pce_org_id: "{{ lookup('env', 'ILLUMIO_PCE_ORG_ID') | default('1') }}"
+illumio_pce_port: "{{ lookup('env', 'ILLUMIO_PCE_PORT') | default('443') | int }}"
+illumio_pce_org_id: "{{ lookup('env', 'ILLUMIO_PCE_ORG_ID') | default('1') | int }}"
 illumio_pce_api_key: "{{ lookup('env', 'ILLUMIO_API_KEY_USERNAME') | default(omit) }}"
 illumio_pce_api_secret: "{{ lookup('env', 'ILLUMIO_API_KEY_SECRET') | default(omit) }}"
 
