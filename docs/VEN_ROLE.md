@@ -1,15 +1,24 @@
 # illumio.illumio.ven role  
 
-**Table of Contents**
 - [Host Requirements](#host-requirements)
     - [Operating System](#operating-system)
     - [VEN Compatibility](#ven-compatibility)
 - [Installation](#installation)
     - [Requirements](#requirements)
+- [Usage Examples](#usage-examples)
 - [Role Variables](#role-variables)
     - [Policy Compute Engine (PCE)](#policy-compute-engine-pce)
     - [Pairing Profile](#pairing-profile)
-    - [Teardown](#teardown)
+    - [Unpair](#unpair)
+- [Tags](#tags)
+    - [ven_pair](#venpair)
+    - [ven_start](#venstart)
+    - [ven_stop](#venstop)
+    - [ven_restart](#venrestart)
+    - [ven_suspend](#vensuspend)
+    - [ven_unsuspend](#venunsuspend)
+    - [ven_deactivate](#vendeactivate)
+    - [ven_unpair](#venunpair)
 - [License](#license)
 
 ## Host Requirements  
@@ -30,10 +39,10 @@ This role will work with the following operating systems (see the compatibility 
 
 ### VEN Compatibility  
 
-PCE Version | 21.2 | 21.5
------------ | :--: | :--:
-VEN 21.2.5  | X    | X
-VEN 21.5.20 |      | X
+PCE Version  | VEN 21.2.5 | VEN 21.5.20
+------------ | :--------: | :---------: 
+21.2         | X          | 
+21.5         | X          | X
 
 See the [Illumio Support dependencies page](https://support.illumio.com/software/os-support-package-dependencies/ven.html) for specific VEN OS compatibility details.  
 
@@ -41,7 +50,7 @@ See the [Illumio Support dependencies page](https://support.illumio.com/software
 
 You can install this role with: `ansible-galaxy install illumio.illumio.ven`
 
-### Requirements
+### Requirements  
 
 This module requires Python 3.6+ and the `illumio` python package.  
 
@@ -54,17 +63,55 @@ ansible-galaxy collection install community.general
 
 > **Note:** these dependencies are included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
 
+## Usage Examples  
+
+**Example inventory file**  
+
+```ini
+[apache_servers]
+10.0.9.212   ansible_connection=ssh  ansible_user=jdoe
+
+[apache_servers:vars]
+ansible_python_interpreter=/usr/bin/python3
+```
+
+**Example playbook**  
+
+```yml
+---
+- name: Install Illumio VENs on Apache Web Server workloads
+  hosts: apache_servers
+  gather_facts: yes
+  roles:
+    - role: illumio.illumio.ven
+```
+
+**Example commands**  
+
+```sh
+# pair
+$ ansible-playbook -i apache_hosts ven_install.yml
+
+# check status
+$ ansible-playbook -i apache_hosts ven_install.yml --tags ven_status
+
+# unpair
+$ ansible-playbook -i apache_hosts ven_install.yml --tags ven_unpair
+```
+
 ## Role Variables  
 
 ### Policy Compute Engine (PCE)  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_pce_hostname` | PCE hostname | -
-`illumio_pce_port` | PCE HTTPS port | `443`
-`illumio_pce_org_id` | PCE Organization ID | `1`
-`illumio_pce_api_key` | PCE API key | -
-`illumio_pce_api_secret` | PCE API secret | -
+Values for the PCE connection details default to the environment variable values in the table below.  
+
+Variable | Description | Environment variable | Default value
+-------- | ----------- | -------------------- | -------------
+`illumio_pce_hostname` | PCE hostname | `ILLUMIO_PCE_HOST` | -
+`illumio_pce_port` | PCE HTTPS port | `ILLUMIO_PCE_PORT` | `443`
+`illumio_pce_org_id` | PCE Organization ID | `ILLUMIO_PCE_ORG_ID` | `1`
+`illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
+`illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
 
 ### Pairing profile  
 
@@ -122,7 +169,7 @@ The workload remains visible in the PCE, but updates to suspended state. This mo
 
 Removes the VEN from a suspended state: the VEN software is started and firewall rules are reapplied according to security policy rules in the PCE.  
 
-### ven_deactivate
+### ven_deactivate  
 
 Breaks the connection between the VEN and the PCE, but leaves the VEN software installed on the workload.  
 
@@ -138,9 +185,9 @@ The workload firewall is restored to a state based on the `illumio_ven_firewall_
 
 To understand the specific actions taken by the VEN during unpairing, see [VEN Unpairing Details](https://docs.illumio.com/core/21.5/Content/Guides/ven-administration/rollback-deactivate-or-uninstall-vens/ven-unpairing-details.htm) in the VEN administration guide.  
 
-## License
+## License  
 
-Copyright 2022 Illumio
+Copyright 2022 Illumio  
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
