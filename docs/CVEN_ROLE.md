@@ -1,7 +1,6 @@
 # illumio.illumio.cven role  
 
-**Table of Contents**
-- [Host Requirements](#host-requirements)
+- [Container Host Requirements](#container-host-requirements)
     - [CVEN Compatibility](#cven-compatibility)
 - [Installation](#installation)
     - [Requirements](#requirements)
@@ -11,7 +10,6 @@
     - [Kubelink](#kubelink)
     - [Pairing Profile](#pairing-profile)
     - [CVEN](#cven)
-- [Tags](#tags)
 - [License](#license)
 
 ## Container Host Requirements  
@@ -28,12 +26,10 @@ This role will work with the following container orchestration platforms:
 
 ### CVEN Compatibility  
 
-PCE Version  | 21.2 | 21.5
------------- | :--: | :--:
-CVEN 21.5    |      | X
-CVEN 21.2    | X    | X
-CVEN 21.1    | X    | X
-CVEN 19.3.6  | X    | X
+PCE Version  | CVEN 19.3.6 | CVEN 21.1 | CVEN 21.2 | CVEN 21.5
+------------ | :---------: | :-------: | :-------: | :-------:
+21.2         | X           | X         | X         | 
+21.5         | X           | X         | X         | X
 
 ## Installation  
 
@@ -46,6 +42,24 @@ This module requires Python 3.6+ and the `illumio` python package.
 The `cven` role depends on the `kubelink` role in order to function - see the `kubelink` [requirements](KUBELINK_ROLE.md#requirements).  
 
 ## Usage Examples  
+
+**Example inventory file**  
+
+```ini
+[kube]
+10.0.7.13   ansible_connection=ssh  ansible_user=kubernetes
+10.0.7.14   ansible_connection=ssh  ansible_user=kubernetes
+10.0.7.15   ansible_connection=ssh  ansible_user=kubernetes
+
+[kube:vars]
+ansible_python_interpreter=/usr/bin/python3
+illumio_cven_image_pull_secret=dockerinternal
+illumio_cven_container_registry=docker-internal.mycompany.com
+illumio_cven_container_name=ven/illumio-ven
+illumio_cven_container_version=21.5.40-8601
+```
+
+**Example playbook**  
 
 ```yml
 ---
@@ -70,7 +84,7 @@ Variable | Description | Environment variable | Default value
 `illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
 `illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
 
-### Kubelink
+### Kubelink  
 
 See the [Kubelink role docs page](KUBELINK_ROLE.md) for details.  
 
