@@ -30,5 +30,5 @@ build_ignore:
   - 'local'
   - 'venv'
   - 'molecule'
-  - 'integration_config.yml'
+  - '**/integration_config.yml'
   - '**/inventory'
