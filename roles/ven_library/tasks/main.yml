@@ -1,0 +1,29 @@
+---
+- name: "Copy compatibility matrix to PCE"
+  ansible.builtin.copy:
+    src: "{{ illumio_compatibility_matrix_path }}"
+    dest: "{{ remote_compatibility_matrix_path }}"
+    mode: 0644
+
+- name: "Copy VEN bundle to PCE"
+  ansible.builtin.copy:
+    src: "{{ illumio_ven_bundle_path }}"
+    dest: "{{ remote_ven_bundle_path }}"
+    mode: 0644
+
+- name: "Install compatibility matrix"
+  become: yes
+  become_user: "{{ illumio_pce_user }}"
+  ansible.builtin.command: "illumio-pce-ctl compatibility-matrix-install '{{ remote_compatibility_matrix_path }}' -x"
+  register: result
+  changed_when: result.rc == 0
+
+- name: "Install VEN bundle"
+  become: yes
+  become_user: "{{ illumio_pce_user }}"
+  ansible.builtin.command: >
+    illumio-pce-ctl ven-software-install '{{ remote_ven_bundle_path }}' -x --no-prompt
+    --orgs '{{ illumio_ven_library_orgs_list }}'
+    {{ illumio_ven_library_set_default | ternary('--default', '', '') }}
+  register: result
+  changed_when: result.rc == 0

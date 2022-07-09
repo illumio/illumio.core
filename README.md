@@ -1,13 +1,17 @@
 # Ansible Collection - illumio.illumio  
 
-> **NOTE:** this collection is currently under development, and is not yet available through Galaxy or Ansible Automation Platform. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
+> **NOTE:** this collection is currently under development, and is **not yet available through Galaxy or Ansible Automation Platform**. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
 
 - [Overview](#overview)
+- [Collection Contents](#collection-contents)
+    - [Modules](#modules)
+    - [Roles](#roles)
 - [Installation](#installation)
     - [Requirements](#requirements)
     - [Ansible Galaxy](#ansible-galaxy)
-- [Collection Contents](#collection-contents)
-    - [Roles](#roles)
+- [Usage](#usage)
+    - [Using illumio Modules](#using-illumio-modules)
+    - [Using illumio Roles](#using-illumio-roles)
 - [Support](#support)
 - [License](#license)
 
@@ -28,26 +32,25 @@ The collection provides Ansible plugins and roles to automate Virtual Enforcemen
 ### Roles  
 
 - [ven](docs/VEN_ROLE.md)
-- [cven](docs/CVEN_ROLE.md)
+- [ven_library](docs/VEN_LIBRARY_ROLE.md)
 - [kubelink](docs/KUBELINK_ROLE.md)
+- [cven](docs/CVEN_ROLE.md)
 
 ## Installation  
 
 ### Requirements  
 
-**Python**  
-
-For most components, you will need the `illumio` Python library:
-
-```sh
-$ pip install illumio
-```
-
-> **NOTE:** the modules in this collection require `illumio` version **1.0.1** or higher  
-
 Python version **3.6** or higher is required for this collection.  
 
 > **Note:** the minimum Python version has been bumped to **3.8** as of Ansible version **2.11**  
+
+**Python**  
+
+For most components, you will need the `illumio` Python library version **1.0.1** or higher installed on **both the local and remote hosts**:
+
+```sh
+$ pip install illumio>=1.0.1
+```
 
 **Ansible**  
 
@@ -75,7 +78,7 @@ ansible-galaxy collection install illumio.illumio
 
 > **NOTE:** these are not fully working examples. See the documentation linked in the [Collection Contents](#collection-contents) section above for usage details for specific modules and roles.  
 
-### Modules  
+### Using illumio Modules  
 
 ```yml
 ---
@@ -99,7 +102,7 @@ ansible-galaxy collection install illumio.illumio
       var: result.pairing_key
 ```
 
-### Roles  
+### Using illumio Roles  
 
 After downloading the collection or an individual role, you can run them individually using the fully-qualified name:
 

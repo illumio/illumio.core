@@ -1,0 +1,11 @@
+---
+# remote host paths to copy VEN and compatibility matrix bundles
+remote_ven_bundle_path: /tmp/illumio_ansible_ven_library_ven_bundle.tar.bz2
+remote_compatibility_matrix_path: /tmp/illumio_ansible_ven_library_compatibility_matrix.tar.bz2
+
+# PCE user on the remote
+illumio_pce_user: ilo-pce
+
+# VEN install options
+illumio_ven_library_orgs_list: all
+illumio_ven_library_set_default: no

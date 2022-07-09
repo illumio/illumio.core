@@ -1,14 +1,14 @@
 # illumio.illumio.kubelink role  
 
-- [Host Requirements](#host-requirements)
+- [Container Host Requirements](#container-host-requirements)
     - [Kubelink Compatibility](#kubelink-compatibility)
 - [Installation](#installation)
     - [Requirements](#requirements)
+- [Usage Examples](#usage-examples)
 - [Role Variables](#role-variables)
     - [Policy Compute Engine (PCE)](#policy-compute-engine-pce)
-    - [Kubelink](#kubelink)
     - [Container Cluster](#container-cluster)
-- [Tags](#tags)
+    - [Kubelink](#kubelink)
 - [License](#license)
 
 ## Container Host Requirements  
@@ -27,10 +27,10 @@ This role will work with the following container orchestration platforms:
 
 Kubelink is compatible with **Kubernetes version 1.18+** and **OpenShift version 4.5+**  
 
-PCE Version  | 21.2 | 21.5 
------------- | :--: | :--: 
-Kubelink 2.1 |      | X
-Kubelink 2.0 | X    | X
+PCE Version  | Kubelink 2.0 | Kubelink 2.1
+------------ | :----------: | :---------: 
+21.2         | X            | 
+21.5         | X            | X
 
 ## Installation  
 
@@ -56,17 +56,57 @@ ansible-galaxy collection install kubernetes.core.k8s
 
 > **Note:** the `kubernetes.core.k8s` dependency is included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
 
+## Usage Examples  
+
+**Example inventory file**  
+
+```ini
+[kube]
+10.0.7.13   ansible_connection=ssh  ansible_user=kubernetes
+10.0.7.14   ansible_connection=ssh  ansible_user=kubernetes
+10.0.7.15   ansible_connection=ssh  ansible_user=kubernetes
+
+[kube:vars]
+ansible_python_interpreter=/usr/bin/python3
+illumio_kubelink_image_pull_secret=dockerinternal
+illumio_kubelink_container_registry=docker-internal.mycompany.com
+illumio_kubelink_container_name=kubelink/illumio-kubelink
+illumio_kubelink_container_version=2.0.2.d53d7f
+```
+
+**Example playbook**  
+
+```yml
+---
+- name: Install Illumio Kubelink to Kubernetes cluster
+  hosts: kube
+  gather_facts: yes
+  roles:
+    - role: illumio.illumio.kubelink
+```
+
 ## Role Variables  
 
 ### Policy Compute Engine (PCE)  
 
+Values for the PCE connection details default to the environment variable values in the table below.  
+
+Variable | Description | Environment variable | Default value
+-------- | ----------- | -------------------- | -------------
+`illumio_pce_hostname` | PCE hostname | `ILLUMIO_PCE_HOST` | -
+`illumio_pce_port` | PCE HTTPS port | `ILLUMIO_PCE_PORT` | `443`
+`illumio_pce_org_id` | PCE Organization ID | `ILLUMIO_PCE_ORG_ID` | `1`
+`illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
+`illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
+
+### Container Cluster  
+
+By default, a new container cluster with a randomized suffix will be created (e.g. `CC-ANSIBLE-nwfhijpv`). If you would like to use an existing container cluster, you can specify a token along with either the cluster name or cluster ID.  
+
 Variable | Description | Default value
 -------- | ----------- | -------------
-`illumio_pce_hostname` | PCE hostname | -
-`illumio_pce_port` | PCE HTTPS port | `443`
-`illumio_pce_org_id` | PCE Organization ID | `1`
-`illumio_pce_api_key` | PCE API key | -
-`illumio_pce_api_secret` | PCE API secret | -
+`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | -
+`illumio_container_cluster_name` | Existing container cluster name | -
 
 ### Kubelink
 
@@ -86,15 +126,6 @@ Variable | Description | Default value
 `illumio_kubelink_container_version` | image tag version to pull | `latest`
 
 > **Note:** if using self-signed or private PKI to sign a host PCE certificate, you will need to update the Kubelink deployment to reference the root CA certificate. See [the Kubelink deployment documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm#DeployKubelink) for details  
-
-### Container Cluster  
-
-By default, a new container cluster with a randomized suffix will be created (e.g. `CC-ANSIBLE-nwfhijpv`). If you would like to use an existing container cluster, you can specify a token along with either the cluster name or cluster ID.  
-
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | -
-`illumio_container_cluster_name` | Existing container cluster name | -
 
 ## License  
 
