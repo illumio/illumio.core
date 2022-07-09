@@ -116,16 +116,6 @@ container_cluster:
       description: List of node names and pod subnets belonging to the cluster.
       type: list
       elements: dict
-      suboptions:
-        name:
-          description: The cluster node name.
-          type: str
-          returned: always
-        pod_subnet:
-          description: The cluster node's pod subnet range
-          type: str
-          returned: always
-      default: []
       returned: always
       sample:
         - name: kube-leader
@@ -139,26 +129,6 @@ container_cluster:
       description: List of errors to do with the container cluster.
       type: list
       elements: dict
-      suboptions:
-        audit_event:
-          description: The audit event object associated with this error.
-          type: dict
-          suboptions:
-            href:
-              description: The HREF of the audit event object.
-              type: str
-              returned: always
-          returned: always
-        duplicate_ids:
-          description: Duplicate error IDs.
-          type: list
-          elements: str
-          returned: always
-        error_type:
-          description: Error type.
-          type: str
-          returned: always
-      default: []
       returned: always
       sample:
         - audit_event:
@@ -171,7 +141,6 @@ container_cluster:
         - An empty array implies readonly permission.
       type: list
       elements: str
-      default: []
       returned: always
     container_cluster_token:
       description:
@@ -201,10 +170,18 @@ container_cluster:
       container_cluster_token: "1_0dfec0acb8e4bc53e052874874da0c24e7ac98da3b3954e3c9ea6f9860722e84"
 '''
 
-from ansible.module_utils.basic import AnsibleModule
+import sys
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
 
-from illumio.infrastructure import ContainerCluster
+try:
+    from illumio.infrastructure import ContainerCluster
+except ImportError:
+    ContainerCluster = None
+    # replicate the traceback formatting from AnsibleModule.fail_json
+    IMPORT_ERROR_TRACEBACK = ''.join(traceback.format_tb(sys.exc_info()[2]))
 
 
 class ContainerClusterApi(PceObjectApi):
@@ -212,9 +189,9 @@ class ContainerClusterApi(PceObjectApi):
         super().__init__(module)
         self._api = self._pce.container_clusters
 
-    def params_match(self, cluster):
-        return self._module.params.get('name') == getattr(cluster, 'name', None) \
-            and self._module.params.get('description') == getattr(cluster, 'description', None)
+    def params_match(self, o):
+        return self._module.params.get('name') == getattr(o, 'name', None) \
+            and self._module.params.get('description') == getattr(o, 'description', None)
 
 
 def spec():
@@ -239,6 +216,12 @@ def main():
         required_one_of=[['name', 'href']],
         supports_check_mode=True
     )
+
+    if not ContainerCluster:
+        module.fail_json(
+            msg=missing_required_lib('illumio', url='https://pypi.org/project/illumio/'),
+            exception=IMPORT_ERROR_TRACEBACK
+        )
 
     container_cluster_api = ContainerClusterApi(module)
 

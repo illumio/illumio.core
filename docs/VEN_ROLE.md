@@ -105,26 +105,26 @@ $ ansible-playbook -i apache_hosts ven_install.yml --tags ven_unpair
 
 Values for the PCE connection details default to the environment variable values in the table below.  
 
-Variable | Description | Environment variable | Default value
--------- | ----------- | -------------------- | -------------
-`illumio_pce_hostname` | PCE hostname | `ILLUMIO_PCE_HOST` | -
-`illumio_pce_port` | PCE HTTPS port | `ILLUMIO_PCE_PORT` | `443`
-`illumio_pce_org_id` | PCE Organization ID | `ILLUMIO_PCE_ORG_ID` | `1`
-`illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
-`illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
+Variable | Description | Data Type | Environment variable | Default value
+-------- | ----------- | --------- | -------------------- | -------------
+`illumio_pce_hostname` | PCE hostname | `str` | `ILLUMIO_PCE_HOST` | -
+`illumio_pce_port` | PCE HTTPS port | `int` | `ILLUMIO_PCE_PORT` | `443`
+`illumio_pce_org_id` | PCE Organization ID | `int` | `ILLUMIO_PCE_ORG_ID` | `1`
+`illumio_pce_api_key` | PCE API key | `str` | `ILLUMIO_API_KEY_USERNAME` | -
+`illumio_pce_api_secret` | PCE API secret | `str` | `ILLUMIO_API_KEY_SECRET` | -
 
 ### Pairing profile  
 
 VEN pairing requires a key that is used to pair the remote workloads with the PCE. A pairing profile is created (or reused if one with the given name already exists) and used to generate the key used for pairing. If a profile with the given name exists, **its configuration will be overwritten with values provided to the role**.  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_ven_profile_name` | pairing profile to use when pairing hosts. If the profile does not exist it will be created. | `PP-ANSIBLE-VEN`
-`illumio_ven_profile_description` | pairing profile description | `"Ansible VEN role pairing profile"`
-`illumio_ven_enforcement_mode` | default enforcement mode for the paired workload. One of `idle`, `visibility_only`, `selective`, or `full` | `idle`
-`illumio_ven_visibility_level` | determines what traffic will be logged by VENs paired with this profile by default. One of `flow_summary`, `flow_drops`, `flow_off`, `enhanced_data_collection` | `flow_summary`
-`illumio_ven_labels` | list of Label HREFs | -
-`illumio_ven_version` | If your PCE's VEN library has multiple versions available, you can specify the version to use. The profile will use the default version configured in the PCE if no value is specified | -
+Variable | Description | Data Type | Default value
+-------- | ----------- | --------- | -------------
+`illumio_ven_profile_name` | pairing profile to use when pairing hosts. If the profile does not exist it will be created. | `str` | `PP-ANSIBLE-VEN`
+`illumio_ven_profile_description` | pairing profile description | `str` | `"Ansible VEN role pairing profile"`
+`illumio_ven_enforcement_mode` | default enforcement mode for the paired workload. One of `idle`, `visibility_only`, `selective`, or `full` | `str` | `idle`
+`illumio_ven_visibility_level` | determines what traffic will be logged by VENs paired with this profile by default. One of `flow_summary`, `flow_drops`, `flow_off`, `enhanced_data_collection` | `str` | `flow_summary`
+`illumio_ven_labels` | list of Label HREFs | `list` | -
+`illumio_ven_version` | If your PCE's VEN library has multiple versions available, you can specify the version to use. The profile will use the default version configured in the PCE if no value is specified | `str` | -
 
 ### Unpair  
 

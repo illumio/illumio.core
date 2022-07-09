@@ -91,22 +91,22 @@ illumio_kubelink_container_version=2.0.2.d53d7f
 
 Values for the PCE connection details default to the environment variable values in the table below.  
 
-Variable | Description | Environment variable | Default value
--------- | ----------- | -------------------- | -------------
-`illumio_pce_hostname` | PCE hostname | `ILLUMIO_PCE_HOST` | -
-`illumio_pce_port` | PCE HTTPS port | `ILLUMIO_PCE_PORT` | `443`
-`illumio_pce_org_id` | PCE Organization ID | `ILLUMIO_PCE_ORG_ID` | `1`
-`illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
-`illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
+Variable | Description | Data Type | Environment variable | Default value
+-------- | ----------- | --------- | -------------------- | -------------
+`illumio_pce_hostname` | PCE hostname | `str` | `ILLUMIO_PCE_HOST` | -
+`illumio_pce_port` | PCE HTTPS port | `int` | `ILLUMIO_PCE_PORT` | `443`
+`illumio_pce_org_id` | PCE Organization ID | `int` | `ILLUMIO_PCE_ORG_ID` | `1`
+`illumio_pce_api_key` | PCE API key | `str` | `ILLUMIO_API_KEY_USERNAME` | -
+`illumio_pce_api_secret` | PCE API secret | `str` | `ILLUMIO_API_KEY_SECRET` | -
 
 ### Container Cluster  
 
 By default, a new container cluster with a randomized suffix will be created (e.g. `CC-ANSIBLE-nwfhijpv`). If you would like to use an existing container cluster, you can specify a token along with either the cluster name or cluster ID.  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | -
-`illumio_container_cluster_name` | Existing container cluster name | -
+Variable | Description | Data Type | Default value
+-------- | ----------- | --------- | -------------
+`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | `str` | -
+`illumio_container_cluster_name` | Existing container cluster name | `str` | -
 
 ### Kubelink
 
@@ -114,16 +114,16 @@ Variable | Description | Default value
 
 If a Kubelink secret exists in the cluster, Container Cluster creation will be skipped and the existing values will be used for the connection. See the Illumio [guide on deploying Kubelink](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm) for details on the secret file.  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_kubelink_namespace` | Kubernetes/OpenShift namespace for Kubelink config | `illumio-system`  
-`illumio_kubelink_secret_name` | Kubelink Secret name | `illumio-kubelink-config`  
-`illumio_kubelink_ignore_cert` | Set to true if using a self-signed certificate for an on-prem PCE | `false`  
-`illumio_kubelink_log_level` | Kubelink log level; `0` for debug, `1` for info, `2` for warn, or `3` for error | `1`
-`illumio_kubelink_container_registry` | Container registry the Kubelink image will be pulled from. Registry secrets must be set up in Kubernetes/OpenShift independent of this role | -
-`illumio_kubelink_image_pull_secret` | imagePullSecret name for authentication to a remote image registry | -
-`illumio_kubelink_container_name` | Kubelink container name | `illumio-kubelink`
-`illumio_kubelink_container_version` | image tag version to pull | `latest`
+Variable | Description | Data Type | Default value
+-------- | ----------- | --------- | -------------
+`illumio_kubelink_namespace` | Kubernetes/OpenShift namespace for Kubelink config | `str` | `illumio-system`  
+`illumio_kubelink_secret_name` | Kubelink Secret name | `str` | `illumio-kubelink-config`  
+`illumio_kubelink_ignore_cert` | Set to true if using a self-signed certificate for an on-prem PCE | `str` | `false`  
+`illumio_kubelink_log_level` | Kubelink log level; `0` for debug, `1` for info, `2` for warn, or `3` for error | `str` | `1`
+`illumio_kubelink_container_registry` | Container registry the Kubelink image will be pulled from. Registry secrets must be set up in Kubernetes/OpenShift independent of this role | `str` | -
+`illumio_kubelink_image_pull_secret` | imagePullSecret name for authentication to a remote image registry | `str` | -
+`illumio_kubelink_container_name` | Kubelink container name | `str` | `illumio-kubelink`
+`illumio_kubelink_container_version` | image tag version to pull | `str` | `latest`
 
 > **Note:** if using self-signed or private PKI to sign a host PCE certificate, you will need to update the Kubelink deployment to reference the root CA certificate. See [the Kubelink deployment documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm#DeployKubelink) for details  
 

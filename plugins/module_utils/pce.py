@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright 2022 Illumio, Inc. All Rights Reserved.
@@ -47,7 +46,7 @@ class PceApiBase(object):
 
 
 class PceObjectApi(PceApiBase, metaclass=ABCMeta):
-    _api: PolicyComputeEngine._PCEObjectAPI
+    _api: object
 
     def get_by_href(self, href: str) -> Any:
         try:
@@ -115,13 +114,13 @@ def pce_connection_spec() -> dict:
             fallback=(env_fallback, ['ILLUMIO_PCE_HOST'])
         ),
         pce_port=dict(
-            type='str',
-            default='443',
+            type='int',
+            default=443,
             fallback=(env_fallback, ['ILLUMIO_PCE_PORT'])
         ),
         pce_org_id=dict(
-            type='str',
-            default='1',
+            type='int',
+            default=1,
             fallback=(env_fallback, ['ILLUMIO_PCE_ORG_ID'])
         ),
         api_key_username=dict(

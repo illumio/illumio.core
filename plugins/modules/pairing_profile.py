@@ -53,6 +53,7 @@ options:
       - "C(visibility_only): no traffic will be blocked by PCE policy."
       - "C(selective): segmentation rules are enforced only for selected inbound services when the host is within the scope of an enforcement boundary."
       - "C(full): segmentation rules are enforced for all inbound and outbound services. Traffic that is not allowed by a segmentation rule is blocked."
+    type: str
     choices: ['idle', 'visibility_only', 'selective', 'full']
     default: 'idle'
   enforcement_mode_lock:
@@ -205,11 +206,8 @@ pairing_profile:
       type: list
       returned: always
       elements: dict
-      suboptions:
-        href:
-          description: The label's HREF.
-          type: str
-          returned: always
+      sample:
+        - href: /orgs/1/labels/1
     role_label_lock:
       description: A flag that denotes whether the role label set by this profile can be overridden from the pairing script.
       type: bool
@@ -274,7 +272,6 @@ pairing_profile:
         - An empty array implies readonly permission.
       type: list
       elements: str
-      default: []
       returned: always
 
   sample:
@@ -309,11 +306,18 @@ pairing_profile:
 '''
 
 import re
+import sys
+import traceback
 
-from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
 
-from illumio.workloads import PairingProfile
+try:
+    from illumio.workloads import PairingProfile
+except ImportError:
+    PairingProfile = None
+    # replicate the traceback formatting from AnsibleModule.fail_json
+    IMPORT_ERROR_TRACEBACK = ''.join(traceback.format_tb(sys.exc_info()[2]))
 
 
 class PairingProfileApi(PceObjectApi):
@@ -321,13 +325,13 @@ class PairingProfileApi(PceObjectApi):
         super().__init__(module)
         self._api = self._pce.pairing_profiles
 
-    def params_match(self, profile):
+    def params_match(self, o):
         ignore_params = ['href', 'state', 'labels', 'ven_version']
         params = [k for k in spec().keys() if k not in ignore_params]
         for k in params:
-            if self._module.params.get(k) != getattr(profile, k, None):
+            if self._module.params.get(k) != getattr(o, k, None):
                 return False
-        return self._compare_labels(profile) and self._compare_ven_version(profile)
+        return self._compare_labels(o) and self._compare_ven_version(o)
 
     def _compare_labels(self, profile):
         remote_labels = [label.href for label in getattr(profile, 'labels', [])]
@@ -339,7 +343,7 @@ class PairingProfileApi(PceObjectApi):
         if not new_ven_version:  # if no version is specified in the module, skip
             return True
         remote_ven_version = getattr(profile, 'agent_software_release', '')
-        match = re.match('^(?:Default \()?([a-zA-Z0-9\.-]+)\)?$', remote_ven_version)
+        match = re.match('^(?:Default \\()?([a-zA-Z0-9\\.-]+)\\)?$', remote_ven_version)
         # if a version is specified in the module, check if it matches the remote
         if match and match.group(1) != new_ven_version:
             return False
@@ -373,8 +377,8 @@ def spec():
             default='flow_summary'
         ),
         visibility_level_lock=dict(type='bool', default=True),
-        allowed_uses_per_key=dict(type='str', default='unlimited'),
-        key_lifespan=dict(type='str', default='unlimited'),
+        allowed_uses_per_key=dict(type='str', default='unlimited', no_log=False),
+        key_lifespan=dict(type='str', default='unlimited', no_log=False),
         ven_version=dict(type='str'),
         labels=dict(
             type='list',
@@ -406,6 +410,12 @@ def main():
         required_together=[['external_data_set', 'external_data_reference']],
         supports_check_mode=True
     )
+
+    if not PairingProfile:
+        module.fail_json(
+            msg=missing_required_lib('illumio', url='https://pypi.org/project/illumio/'),
+            exception=IMPORT_ERROR_TRACEBACK
+        )
 
     pairing_profile_api = PairingProfileApi(module)
 

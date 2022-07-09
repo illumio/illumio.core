@@ -76,13 +76,13 @@ illumio_cven_container_version=21.5.40-8601
 
 Values for the PCE connection details default to the environment variable values in the table below.  
 
-Variable | Description | Environment variable | Default value
--------- | ----------- | -------------------- | -------------
-`illumio_pce_hostname` | PCE hostname | `ILLUMIO_PCE_HOST` | -
-`illumio_pce_port` | PCE HTTPS port | `ILLUMIO_PCE_PORT` | `443`
-`illumio_pce_org_id` | PCE Organization ID | `ILLUMIO_PCE_ORG_ID` | `1`
-`illumio_pce_api_key` | PCE API key | `ILLUMIO_API_KEY_USERNAME` | -
-`illumio_pce_api_secret` | PCE API secret | `ILLUMIO_API_KEY_SECRET` | -
+Variable | Description | Data Type | Environment variable | Default value
+-------- | ----------- | --------- | -------------------- | -------------
+`illumio_pce_hostname` | PCE hostname | `str` | `ILLUMIO_PCE_HOST` | -
+`illumio_pce_port` | PCE HTTPS port | `int` | `ILLUMIO_PCE_PORT` | `443`
+`illumio_pce_org_id` | PCE Organization ID | `int` | `ILLUMIO_PCE_ORG_ID` | `1`
+`illumio_pce_api_key` | PCE API key | `str` | `ILLUMIO_API_KEY_USERNAME` | -
+`illumio_pce_api_secret` | PCE API secret | `str` | `ILLUMIO_API_KEY_SECRET` | -
 
 ### Kubelink  
 
@@ -92,27 +92,27 @@ See the [Kubelink role docs page](KUBELINK_ROLE.md) for details.
 
 The CVEN secret requires a pairing key that is used to pair the cluster hosts with the PCE. A pairing profile is created (or reused if one with the given name already exists) and used to generate the key for the CVEN secret.  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_cven_profile_name` | CVEN pairing profile name | `PP-ANSIBLE-CVEN`
-`illumio_cven_profile_description` | CVEN pairing profile description | `"CVEN cluster host profile. Created by Ansible"`
-`illumio_cven_enforcement_mode` | default enforcement mode for the paired workload. One of `idle`, `visibility_only`, `selective`, or `full` | `idle`
-`illumio_cven_visibility_level` | determines what traffic will be logged by VENs paired with this profile by default. One of `flow_summary`, `flow_drops`, `flow_off`, `enhanced_data_collection` | `flow_summary`
-`illumio_cven_labels` | list of Label HREFs | -
-`illumio_cven_ven_version` | If your PCE's VEN library has multiple versions available, you can specify the version to use. The profile will use the default version configured in the PCE if no value is specified | -
+Variable | Description | Data Type | Default value
+-------- | ----------- | --------- | -------------
+`illumio_cven_profile_name` | CVEN pairing profile name | `str` | `PP-ANSIBLE-CVEN`
+`illumio_cven_profile_description` | CVEN pairing profile description | `str` | `"CVEN cluster host profile. Created by Ansible"`
+`illumio_cven_enforcement_mode` | default enforcement mode for the paired workload. One of `idle`, `visibility_only`, `selective`, or `full` | `str` | `idle`
+`illumio_cven_visibility_level` | determines what traffic will be logged by VENs paired with this profile by default. One of `flow_summary`, `flow_drops`, `flow_off`, `enhanced_data_collection` | `str` | `flow_summary`
+`illumio_cven_labels` | list of Label HREFs | `list` | -
+`illumio_cven_ven_version` | If your PCE's VEN library has multiple versions available, you can specify the version to use. The profile will use the default version configured in the PCE if no value is specified | `str` | -
 
 ### CVEN  
 
 See the Illumio [guide on deploying CVENs](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-c-vens-in-your-cluster.htm) for installation details.  
 
-Variable | Description | Default value
--------- | ----------- | -------------
-`illumio_cven_namespace` | Kubernetes/OpenShift namespace for CVEN config | `illumio-system`  
-`illumio_cven_secret_name` | CVEN Secret name | `illumio-ven-config`  
-`illumio_cven_container_registry` | Container registry the CVEN image will be pulled from. Registry secrets must be set up in Kubernetes/OpenShift independent of this role | -
-`illumio_cven_image_pull_secret` | imagePullSecret name for authentication to a remote image registry | -
-`illumio_cven_container_name` | CVEN container name | `illumio-ven`
-`illumio_cven_container_version` | image tag version to pull | `latest`
+Variable | Description | Data Type | Default value
+-------- | ----------- | --------- | -------------
+`illumio_cven_namespace` | Kubernetes/OpenShift namespace for CVEN config | `str` | `illumio-system`  
+`illumio_cven_secret_name` | CVEN Secret name | `str` | `illumio-ven-config`  
+`illumio_cven_container_registry` | Container registry the CVEN image will be pulled from. Registry secrets must be set up in Kubernetes/OpenShift independent of this role | `str` | -
+`illumio_cven_image_pull_secret` | imagePullSecret name for authentication to a remote image registry | `str` | -
+`illumio_cven_container_name` | CVEN container name | `str` | `illumio-ven`
+`illumio_cven_container_version` | image tag version to pull | `str` | `latest`
 
 > **Note:** if using self-signed or private PKI to sign a host PCE certificate, you will need to update the CVEN DaemonSet to reference the root CA certificate. See [the CVEN deployment documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-c-vens-in-your-cluster.htm#DeployCVENs) for details  
 
