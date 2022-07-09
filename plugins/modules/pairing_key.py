@@ -53,10 +53,18 @@ pairing_key:
     returned: success
 '''
 
-from ansible.module_utils.basic import AnsibleModule
+import sys
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceApiBase, pce_connection_spec  # type: ignore
 
-from illumio.exceptions import IllumioApiException
+try:
+    from illumio.exceptions import IllumioApiException
+except ImportError:
+    IllumioApiException = None
+    # replicate the traceback formatting from AnsibleModule.fail_json
+    IMPORT_ERROR_TRACEBACK = ''.join(traceback.format_tb(sys.exc_info()[2]))
 
 
 class PairingKeyApi(PceApiBase):
@@ -92,6 +100,12 @@ def main():
         required_one_of=[['pairing_profile_name', 'pairing_profile_href']],
         supports_check_mode=True
     )
+
+    if not IllumioApiException:
+        module.fail_json(
+            msg=missing_required_lib('illumio', url='https://pypi.org/project/illumio/'),
+            exception=IMPORT_ERROR_TRACEBACK
+        )
 
     if module.check_mode:
         module.exit_json(changed=True, pairing_key='')
