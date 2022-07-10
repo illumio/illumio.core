@@ -40,19 +40,25 @@ jobs:
     strategy:
       matrix:
         ansible:
-          - stable-2.9
           - stable-2.10
           - stable-2.11
           - stable-2.12
           - stable-2.13
-          - devel
-        python: ["3.6", "3.10"]
-        exclude:
-          - ansible: stable-2.12
-            python: "3.6"
-          - ansible: stable-2.13
+        python: ["3.6", "3.9", "3.10"]
+        include:
+          - ansible: stable-2.9
             python: "3.6"
           - ansible: devel
+            python: "3.10"
+            experimental: true
+        exclude:
+          - ansible: stable-2.10
+            python: "3.10"
+          - ansible: stable-2.11  # 3.10 isn't supported in ansible <=2.11
+            python: "3.10"
+          - ansible: stable-2.12  # 3.6 isn't supported in ansible >=2.12
+            python: "3.6"
+          - ansible: stable-2.13
             python: "3.6"
     runs-on: ubuntu-latest
     steps:
