@@ -7,6 +7,36 @@ on:
     branches: 'main'
 
 jobs:
+  ansible-lint:
+    name: ansible-lint - ansible-${{ matrix.ansible }}+${{ matrix.python }}
+    strategy:
+      matrix:
+        ansible:
+          - stable-2.9  # test against AAP certified Ansible versions
+          - stable-2.11
+        python:
+          - 3.6
+          - 3.10
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          path: ansible_collections/community/illumio
+
+      - name: Set up Python ${{ matrix.ansible }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install ansible-base ${{ matrix.ansible }}
+        run: pip install ansible-lint yamllint https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run ansible-lint
+        run: ansible-lint --force-color -v
+        working-directory: ./ansible_collections/community/illumio
+
   sanity:
     name: Sanity ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
