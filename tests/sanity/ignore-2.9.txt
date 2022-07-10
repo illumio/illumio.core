@@ -1,4 +1,3 @@
 plugins/modules/container_cluster.py validate-modules:missing-gplv3-license # ignore GPLv3 license checks as we use Apache2.0
 plugins/modules/pairing_key.py validate-modules:missing-gplv3-license
 plugins/modules/pairing_profile.py validate-modules:missing-gplv3-license
-CHANGELOG.rst rstcheck # ignore underline length checks
