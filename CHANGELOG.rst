@@ -1,8 +1,9 @@
-Changelog
-=========
+===========
+ Changelog
+===========
 
 Version 0.2.2 (July 09, 2022)
------------
+-----------------------------
 
 * fix issues found with `ansible-test sanity`
 
@@ -11,7 +12,7 @@ IMPROVEMENTS:
 * update role documentation to include expected data types for role variables
 
 Version 0.2.1 (July 09, 2022)
------------
+-----------------------------
 
 FEATURES:
 
@@ -31,7 +32,7 @@ IMPROVEMENTS:
 * improve role documentation
 
 Version 0.2.0 (Jun 29, 2022)
------------
+----------------------------
 
 * automate container cluster setup and sync
 
@@ -44,7 +45,7 @@ FEATURES:
 * Container cluster module - create/update/delete container cluster objects in the PCE
 
 Version 0.1.1 (Apr 27, 2022)
------------
+----------------------------
 
 * initial implementation
 

@@ -13,6 +13,7 @@
     - [Using illumio Modules](#using-illumio-modules)
     - [Using illumio Roles](#using-illumio-roles)
 - [Support](#support)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Overview  
@@ -133,7 +134,11 @@ Or by specifying `illumio.illumio` in the `collections` field and using the role
 
 ## Support  
 
-The `illumio.illumio` collection is released and distributed as open source software subject to the included [LICENSE](LICENSE). Illumio has no obligation or responsibility related to the package with respect to support, maintenance, availability, security or otherwise. Please read the entire [LICENSE](LICENSE) for additional information regarding the permissions and limitations. Support is offered on a best-effort basis through the Illumio app integrations team and project contributors.  
+The `illumio.illumio` collection is released and distributed as open source software subject to the included [LICENSE](LICENSE). Illumio has no obligation or responsibility related to the package with respect to support, maintenance, availability, security or otherwise. Please read the entire [LICENSE](LICENSE) for additional information regarding the permissions and limitations. Support is offered on a best-effort basis through the [Illumio app integrations team](mailto:app-integrations@illumio.com) and project contributors.  
+
+## Contributing  
+
+See the project's [CONTRIBUTING](.github/CONTRIBUTING.md) document for details.  
 
 ## License  
 
