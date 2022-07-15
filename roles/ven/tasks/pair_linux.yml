@@ -1,7 +1,7 @@
 ---
 # Install VEN on Linux
 
-- name: "VEN | Pair | Linux"
+- name: "Pair Linux VEN"
   become: yes
   block:
 
