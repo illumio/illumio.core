@@ -47,7 +47,7 @@ Python version **3.6** or higher is required for this collection.
 
 **Python**  
 
-For most components, you will need the `illumio` Python library version **1.0.1** or higher installed on **both the local and remote hosts**:
+For most components, you will need the `illumio` Python library version **1.0.1** or higher installed on the local Ansible hosts:  
 
 ```sh
 $ pip install illumio>=1.0.1
