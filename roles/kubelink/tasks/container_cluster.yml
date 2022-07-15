@@ -14,6 +14,7 @@
     name: "{{ illumio_container_cluster_name }}"
     description: Container cluster created by Ansible
     state: present
+  delegate_to: '127.0.0.1'
   register: container_cluster_result
 
 - name: "Fail if cluster token is missing"

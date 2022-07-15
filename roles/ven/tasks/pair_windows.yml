@@ -1,10 +1,24 @@
 ---
 # Install VEN on Windows
 
-- name: "VEN | Pair | Windows"
+- name: "Pair Windows VEN"
   become: yes
   ansible.windows.win_powershell:
     script: |
+      param (
+        [String]
+        $PceFqdn,
+
+        [String]
+        $PcePort,
+
+        [String]
+        $PairingProfileId,
+
+        [String]
+        $ActivationCode
+      )
+
       Set-ExecutionPolicy -Scope process remotesigned -Force
 
       Start-Sleep -s 3
@@ -13,11 +27,13 @@
 
       [System.Net.ServicePointManager]::SecurityProtocol=[Enum]::ToObject([System.Net.SecurityProtocolType], 3072)
 
+      [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+
       Set-Variable -Name ErrorActionPreference -Value Continue
 
-      (New-Object System.Net.WebClient).DownloadFile('https://$PceFqdn:$PcePort/api/v18/software/ven/image?pair_script=pair.ps1&profile_id=$PairingProfileId', '.\Pair.ps1')
+      (New-Object System.Net.WebClient).DownloadFile("https://$($PceFqdn):$($PcePort)/api/v18/software/ven/image?pair_script=pair.ps1&profile_id=$($PairingProfileId)", "$($env:TEMP)\Pair.ps1")
 
-      .\Pair.ps1  -management-server $PceFqdn:$PcePort -activation-code $ActivationCode
+      & $env:TEMP\Pair.ps1 -management-server ${PceFqdn}:${PcePort} -activation-code ${ActivationCode}
     parameters:
       PceFqdn: "{{ illumio_pce_hostname }}"
       PcePort: "{{ illumio_pce_port }}"
