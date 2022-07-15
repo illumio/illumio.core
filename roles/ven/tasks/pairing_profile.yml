@@ -15,6 +15,7 @@
     ven_version: "{{ illumio_ven_version | default(omit) }}"
     enabled: yes
     state: present
+  delegate_to: '127.0.0.1'
   register: pairing_profile_result
 
 - name: "Set pairing profile ID"
@@ -29,6 +30,7 @@
     api_key_username: "{{ illumio_pce_api_key }}"
     api_key_secret: "{{ illumio_pce_api_secret }}"
     pairing_profile_name: "{{ illumio_ven_profile_name }}"
+  delegate_to: '127.0.0.1'
   register: pairing_key_result
 
 - name: "Set pairing key"
