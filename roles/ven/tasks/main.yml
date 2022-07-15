@@ -2,9 +2,9 @@
 - name: "Fail on unrecognized system"
   ansible.builtin.fail:
     msg: "Couldn't recognize remote host OS"
-  when: ansible_system != 'Windows' and ansible_system != 'Linux'
+  when: ansible_system != 'Win32NT' and ansible_system != 'Linux'
 
-- name: "VEN | Pair"
+- name: "VEN Pair"
   block:
 
     - include_tasks: pairing_profile.yml
@@ -13,11 +13,17 @@
       when: ansible_system == 'Linux'
 
     - include_tasks: pair_windows.yml
-      when: ansible_system == 'Windows'
+      when: ansible_system == 'Win32NT'
 
   tags:
     - ven_pair
 
-- include_tasks: manage_ven.yml
+- include_tasks: manage_ven_linux.yml
+  when: ansible_system == 'Linux'
+  tags:
+    - always
+
+- include_tasks: manage_ven_windows.yml
+  when: ansible_system == 'Win32NT'
   tags:
     - always
