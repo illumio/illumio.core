@@ -2,6 +2,16 @@
  Changelog
 ===========
 
+Version 0.2.3 (July 15, 2022)
+-----------------------------
+
+BUG FIXES:
+
+* fix Windows compatibility for VEN role
+    * fix powershell script for Windows pairing
+    * separate management tasks to use Linux-/Windows-specific modules
+    * delegate PCE object module calls to localhost to work with Windows remotes
+
 Version 0.2.2 (July 09, 2022)
 -----------------------------
 
