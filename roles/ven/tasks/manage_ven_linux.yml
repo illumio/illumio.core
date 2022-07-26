@@ -82,7 +82,7 @@
 
     - name: "Get VEN status"
       become: yes
-      ansible.builtin.command: "{{ illumio_ven_ctl }} status"
+      ansible.builtin.command: "{{ illumio_ven_ctl }} status --stdexit"
       failed_when: ven_status.rc > 1
       register: ven_status
       changed_when: False
