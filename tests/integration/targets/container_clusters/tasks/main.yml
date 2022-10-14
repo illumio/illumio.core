@@ -4,7 +4,7 @@
     container_cluster_name: "{{ integration_prefix }}-CC-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
 - name: Test check mode for container cluster creation
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -23,7 +23,7 @@
       - result is changed
 
 - name: Test container cluster creation
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -47,7 +47,7 @@
     container_cluster_href: "{{ result.container_cluster['href'] }}"
 
 - name: Test check mode for referencing present container cluster using HREF
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -67,7 +67,7 @@
       - result is not changed
 
 - name: Test that container clusters can be referenced using HREF
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -87,7 +87,7 @@
       - result is not changed
 
 - name: Test check mode for present container cluster without changes
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -106,7 +106,7 @@
       - result is not changed
 
 - name: Test present container cluster without changes
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -125,7 +125,7 @@
       - "'container_cluster_token' not in result.container_cluster"
 
 - name: Test check mode for container cluster update
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -144,7 +144,7 @@
       - result is changed
 
 - name: Test container cluster update
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -163,7 +163,7 @@
       - result.container_cluster['description'] == 'Updated description'
 
 - name: Test check mode for container cluster deletion
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -181,7 +181,7 @@
       - result is changed
 
 - name: Test container cluster deletion
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -199,7 +199,7 @@
       - result.container_cluster == {}
 
 - name: Test that the container cluster has been removed
-  container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"

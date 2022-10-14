@@ -1,4 +1,4 @@
-# illumio.illumio.ven_library role  
+# illumio.core.ven_library role  
 
 - [Host Requirements](#host-requirements)
     - [Operating System](#operating-system)
@@ -32,14 +32,14 @@ See the [Illumio Support dependencies page](https://support.illumio.com/software
 
 ## Installation  
 
-You can install this role with: `ansible-galaxy install illumio.illumio.ven_library`
+You can install this role with: `ansible-galaxy install illumio.core.ven_library`
 
 ### Requirements  
 
 To use this role, you will need a VEN bundle and VEN upgrade Compatibility Matrix bundles on the Ansible host system. These `.bz2` bundles can be downloaded from the [Illumio Support Portal download page](https://support.illumio.com/software/download.html).  
 For details, see [VEN Library Setup in the PCE](https://docs.illumio.com/core/21.5/Content/Guides/ven-install-upgrade/set-up-pce/ven-library-setup-in-the-pce.htm) in the _VEN Install and Upgrade_ guide.  
 
-> **Note:** these dependencies are included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
+> **Note:** these dependencies are included when installing the `illumio.core` collection with `ansible-galaxy collection install illumio.core`  
 
 ## Usage Examples  
 
@@ -62,7 +62,7 @@ illumio_compatibility_matrix_path="/usr/john.doe/illumio/ven/21.5/illumio-releas
   hosts: pces
   gather_facts: yes
   roles:
-    - role: illumio.illumio.ven_library
+    - role: illumio.core.ven_library
 ```
 
 ## Role Variables  

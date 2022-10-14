@@ -5,7 +5,7 @@
   when: illumio_container_cluster_name is not defined
 
 - name: "Create container cluster"
-  illumio.illumio.container_cluster:
+  illumio.core.container_cluster:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"

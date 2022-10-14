@@ -13,6 +13,8 @@ from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib, env_fallback
 
+IMPORT_ERROR_TRACEBACK = ''
+
 try:
     from illumio import PolicyComputeEngine, IllumioApiException, IllumioEncoder
 except ImportError:

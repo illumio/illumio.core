@@ -78,6 +78,10 @@
     - ven_status
 
 - name: "Check VEN status"
+  when: ven_cli.stat.exists
+  tags:
+    - always
+    - ven_status
   block:
 
     - name: "Get VEN status"
@@ -90,8 +94,3 @@
     - name: "Print VEN status"
       ansible.builtin.debug:
         msg: "{{ ven_status.stdout_lines }}"
-
-  when: ven_cli.stat.exists
-  tags:
-    - always
-    - ven_status

@@ -1,4 +1,4 @@
-# Ansible Collection - illumio.illumio  
+# Ansible Collection - illumio.core  
 
 > **NOTE:** this collection is currently under development, and is **not yet available through Galaxy or Ansible Automation Platform**. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
 
@@ -18,7 +18,7 @@
 
 ## Overview  
 
-This repository contains the official `illumio.illumio` Ansible Collection.  
+This repository contains the official `illumio.core` Ansible Collection.  
 
 The collection provides Ansible plugins and roles to automate Virtual Enforcement Node (VEN) installation for the Illumio Policy Compute Engine (PCE).  
 
@@ -47,17 +47,23 @@ Python version **3.6** or higher is required for this collection.
 
 **Python**  
 
-For most components, you will need the `illumio` Python library version **1.0.1** or higher installed on the local Ansible hosts:  
+For most components, you will need the `illumio` Python library version **1.1.1** or higher installed on the Ansible controller:  
 
 ```sh
-$ pip install illumio>=1.0.1
+$ pip install illumio>=1.1.1
+```
+
+For Windows hosts, you will also need to install the `pywinrm` library on the Ansible controller:
+
+```sh
+$ pip install pywinrm
 ```
 
 **Ansible**  
 
 This collection works with Ansible versions **2.9** and above.  
 
-In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. The `illumio.illumio` collection depends on the following collections:  
+In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. The `illumio.core` collection depends on the following collections:  
 
 > **Note:** individual modules may have additional requirements beyond these - see the documentation linked in the [Collection Contents](#collection-contents) section above for installation details and requirements.  
 
@@ -65,14 +71,14 @@ In Ansible 2.10 and higher, modules have been moved into collections. Additional
 - `ansible.windows`
 - `kubernetes.core`
 
-> **Note:** these dependencies are specified in `galaxy.xml` and will automatically be installed along with the `illumio.illumio` collection  
+> **Note:** these dependencies are specified in `galaxy.xml` and will automatically be installed along with the `illumio.core` collection  
 
 ### Ansible Galaxy  
 
 You can install this collection from Ansible Galaxy using the CLI:  
 
 ```sh
-ansible-galaxy collection install illumio.illumio
+ansible-galaxy collection install illumio.core
 ```
 
 ## Usage  
@@ -88,14 +94,14 @@ ansible-galaxy collection install illumio.illumio
   gather_facts: no
   tasks:
   - name: Create pairing profile
-    illumio.illumio.pairing_profile:
+    illumio.core.pairing_profile:
       name: PP-ANSIBLE
       enabled: yes
       state: present
     register: profile_result
 
   - name: Generate pairing key
-    illumio.illumio.pairing_key:
+    illumio.core.pairing_key:
       pairing_profile_href: "{{ profile_result.pairing_profile['href'] }}"
     register: result
 
@@ -112,19 +118,19 @@ After downloading the collection or an individual role, you can run them individ
 - name: Pair VEN using the illumio collection
   hosts: localhost
   roles:
-    - role: illumio.illumio.ven
+    - role: illumio.core.ven
       illumio_pce_hostname: my.pce.com
       ...
 ```
 
-Or by specifying `illumio.illumio` in the `collections` field and using the role name as below:
+Or by specifying `illumio.core` in the `collections` field and using the role name as below:
 
 ```yml
 ---
 - name: Pair VEN using the illumio collection
   hosts: localhost
   collections:
-    - illumio.illumio
+    - illumio.core
 
   roles:
     - role: ven
@@ -134,7 +140,7 @@ Or by specifying `illumio.illumio` in the `collections` field and using the role
 
 ## Support  
 
-The `illumio.illumio` collection is released and distributed as open source software subject to the included [LICENSE](LICENSE). Illumio has no obligation or responsibility related to the package with respect to support, maintenance, availability, security or otherwise. Please read the entire [LICENSE](LICENSE) for additional information regarding the permissions and limitations. Support is offered on a best-effort basis through the [Illumio app integrations team](mailto:app-integrations@illumio.com) and project contributors.  
+The `illumio.core` collection is released and distributed as open source software subject to the included [LICENSE](LICENSE). Illumio has no obligation or responsibility related to the package with respect to support, maintenance, availability, security or otherwise. Please read the entire [LICENSE](LICENSE) for additional information regarding the permissions and limitations. Support is offered on a best-effort basis through the [Illumio app integrations team](mailto:app-integrations@illumio.com) and project contributors.  
 
 ## Contributing  
 

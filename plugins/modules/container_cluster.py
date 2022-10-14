@@ -20,7 +20,7 @@ author:
   - Duncan Sommerville (@dsommerville-illumio)
 requirements:
   - "python>=3.6"
-  - "illumio>=1.0.1"
+  - "illumio>=1.1.1"
 version_added: "0.2.0"
 
 options:
@@ -45,12 +45,12 @@ options:
     default: 'present'
 
 extends_documentation_fragment:
-  - illumio.illumio.pce
+  - illumio.core.pce
 '''
 
 EXAMPLES = r'''
 - name: "Create container cluster"
-  illumio.illumio.container_cluster:
+  illumio.core.container_cluster:
     name: CC-KUBE
     description: Kubernetes cluster
     state: present
@@ -61,12 +61,12 @@ EXAMPLES = r'''
     kube_cluster_token: "{{ container_cluster_result.container_cluster['container_cluster_token'] }}"
 
 - name: "Remove existing cluster"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     name: CC-KUBE
     state: absent
 
 - name: "Remove cluster by HREF"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     href: /orgs/1/container_clusters/f5bef182-8c55-4219-b35b-0a50b707e434
     state: absent
 '''
@@ -174,7 +174,9 @@ import sys
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
+from ansible_collections.illumio.core.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
+
+IMPORT_ERROR_TRACEBACK = ''
 
 try:
     from illumio.infrastructure import ContainerCluster

@@ -1,6 +1,6 @@
 ---
 - name: "Create CVEN pairing profile"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -18,7 +18,7 @@
   register: pairing_profile_result
 
 - name: "Generate pairing key"
-  illumio.illumio.pairing_key:
+  illumio.core.pairing_key:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"

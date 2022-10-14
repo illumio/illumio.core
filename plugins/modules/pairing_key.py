@@ -19,7 +19,7 @@ author:
   - Duncan Sommerville (@dsommerville-illumio)
 requirements:
   - "python>=3.6"
-  - "illumio>=1.0.0"
+  - "illumio>=1.1.1"
 version_added: "0.2.0"
 
 options:
@@ -31,17 +31,17 @@ options:
     type: str
 
 extends_documentation_fragment:
-  - illumio.illumio.pce
+  - illumio.core.pce
 '''
 
 EXAMPLES = r'''
 - name: "Generate pairing key by profile name"
-  illumio.illumio.pairing_key:
+  illumio.core.pairing_key:
     pairing_profile_name: Default
   register: pairing_key_result
 
 - name: "Generate pairing key by profile HREF"
-  illumio.illumio.pairing_key:
+  illumio.core.pairing_key:
     pairing_profile_href: /orgs/1/pairing_profiles/1
   register: pairing_key_result
 '''
@@ -57,7 +57,9 @@ import sys
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceApiBase, pce_connection_spec  # type: ignore
+from ansible_collections.illumio.core.plugins.module_utils.pce import PceApiBase, pce_connection_spec  # type: ignore
+
+IMPORT_ERROR_TRACEBACK = ''
 
 try:
     from illumio.exceptions import IllumioApiException

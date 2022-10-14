@@ -18,7 +18,7 @@ author:
   - Duncan Sommerville (@dsommerville-illumio)
 requirements:
   - "python>=3.6"
-  - "illumio>=1.0.0"
+  - "illumio>=1.1.1"
 version_added: "0.2.0"
 
 options:
@@ -131,12 +131,12 @@ options:
     type: str
 
 extends_documentation_fragment:
-  - illumio.illumio.pce
+  - illumio.core.pce
 '''
 
 EXAMPLES = r'''
 - name: "Create profile with default labels"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     name: PP-DB
     state: present
     enabled: yes
@@ -145,7 +145,7 @@ EXAMPLES = r'''
       - href: /orgs/1/labels/2
 
 - name: "Create profile with pairing key uses and lifespan limitations"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     name: PP-AUTOMATION
     state: present
     enforcement_mode: visibility_only
@@ -153,12 +153,12 @@ EXAMPLES = r'''
     key_lifespan: 30
 
 - name: "Remove existing profile"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     name: PP-DB
     state: absent
 
 - name: "Remove profile by HREF"
-  illumio.illumio.pairing_profile:
+  illumio.core.pairing_profile:
     href: /orgs/1/pairing_profiles/1
     state: absent
 '''
@@ -310,7 +310,9 @@ import sys
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible_collections.illumio.illumio.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
+from ansible_collections.illumio.core.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
+
+IMPORT_ERROR_TRACEBACK = ''
 
 try:
     from illumio.workloads import PairingProfile

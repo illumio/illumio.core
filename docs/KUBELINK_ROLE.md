@@ -1,4 +1,4 @@
-# illumio.illumio.kubelink role  
+# illumio.core.kubelink role  
 
 - [Container Host Requirements](#container-host-requirements)
     - [Kubelink Compatibility](#kubelink-compatibility)
@@ -34,11 +34,11 @@ PCE Version  | Kubelink 2.0 | Kubelink 2.1
 
 ## Installation  
 
-You can install this role with: `ansible-galaxy install illumio.illumio.kubelink`  
+You can install this role with: `ansible-galaxy install illumio.core.kubelink`  
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible host.  
+This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
 
 You must have an existing container repository containing the Kubelink Docker image. See the [Kubelink documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm?Highlight=kubelink) for details.  
 
@@ -54,7 +54,7 @@ In Ansible 2.10 and higher, modules have been moved into collections. Additional
 ansible-galaxy collection install kubernetes.core.k8s
 ```
 
-> **Note:** the `kubernetes.core.k8s` dependency is included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
+> **Note:** the `kubernetes.core.k8s` dependency is included when installing the `illumio.core` collection with `ansible-galaxy collection install illumio.core`  
 
 ## Usage Examples  
 
@@ -82,7 +82,7 @@ illumio_kubelink_container_version=2.0.2.d53d7f
   hosts: kube
   gather_facts: yes
   roles:
-    - role: illumio.illumio.kubelink
+    - role: illumio.core.kubelink
 ```
 
 ## Role Variables  

@@ -2,6 +2,15 @@
  Changelog
 ===========
 
+Version 0.2.4 (TBD)
+-------------------
+
+IMPROVEMENTS:
+
+* increment `illumio` python library version requirement to 1.1.1
+* rename collection from `illumio.illumio` to `illumio.core`
+* initial Galaxy release
+
 Version 0.2.3 (July 15, 2022)
 -----------------------------
 
