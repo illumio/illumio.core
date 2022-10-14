@@ -4,7 +4,7 @@
     pairing_profile_name: "{{ integration_prefix }}-PP-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
 - name: Test check mode for pairing profile creation
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -25,7 +25,7 @@
       - result.pairing_profile['name'] == pairing_profile_name
 
 - name: Test pairing profile creation
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -61,7 +61,7 @@
     pairing_profile_href: "{{ result.pairing_profile['href'] }}"
 
 - name: Test check mode for referencing present pairing profile using HREF
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -82,7 +82,7 @@
       - result is not changed
 
 - name: Test that pairing profiles can be referenced by HREF
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -102,7 +102,7 @@
       - result is not changed
 
 - name: Test invalid enforcement_mode value
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -124,7 +124,7 @@
       - "result.msg == 'value of enforcement_mode must be one of: idle, visibility_only, selective, full, got: invalid_value'"
 
 - name: Test invalid visibility_level value
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -146,7 +146,7 @@
       - "result.msg == 'value of visibility_level must be one of: flow_summary, flow_drops, flow_off, enhanced_data_collection, got: invalid_value'"
 
 - name: Test check mode for present pairing profile without changes
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -166,7 +166,7 @@
       - result is not changed
 
 - name: Test present pairing profile without changes
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -185,7 +185,7 @@
       - result is not changed
 
 - name: Test check mode for pairing profile update
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -205,7 +205,7 @@
       - result is changed
 
 - name: Test pairing profile update
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -225,7 +225,7 @@
       - result.pairing_profile['description'] == 'Updated description'
 
 - name: Test check mode for pairing key generation
-  pairing_key:
+  illumio.core.pairing_key:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -243,7 +243,7 @@
       - result.pairing_key == ''
 
 - name: Test pairing key generation
-  pairing_key:
+  illumio.core.pairing_key:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -260,7 +260,7 @@
       - result.pairing_key | length > 0
 
 - name: Test disable pairing profile
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -280,7 +280,7 @@
       - not result.pairing_profile['enabled']
 
 - name: Test set pairing profile key lifespan
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -301,7 +301,7 @@
       - result.pairing_profile['key_lifespan'] == 120
 
 - name: Test set pairing profile uses per key
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -323,7 +323,7 @@
       - result.pairing_profile['allowed_uses_per_key'] == 1
 
 - name: Test check mode for pairing profile deletion
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -341,7 +341,7 @@
       - result is changed
 
 - name: Test pairing profile deletion
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"
@@ -359,7 +359,7 @@
       - result.pairing_profile == {}
 
 - name: Test that the pairing profile has been removed
-  pairing_profile:
+  illumio.core.pairing_profile:
     pce_hostname: "{{ illumio_pce_hostname }}"
     pce_port: "{{ illumio_pce_port }}"
     pce_org_id: "{{ illumio_pce_org_id }}"

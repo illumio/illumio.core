@@ -5,25 +5,29 @@
   when: ansible_system != 'Win32NT' and ansible_system != 'Linux'
 
 - name: "VEN Pair"
-  block:
-
-    - include_tasks: pairing_profile.yml
-
-    - include_tasks: pair_linux.yml
-      when: ansible_system == 'Linux'
-
-    - include_tasks: pair_windows.yml
-      when: ansible_system == 'Win32NT'
-
   tags:
     - ven_pair
+  block:
 
-- include_tasks: manage_ven_linux.yml
+    - name: "Include pairing profile tasks"
+      ansible.builtin.include_tasks: pairing_profile.yml
+
+    - name: "Include Linux pairing tasks"
+      ansible.builtin.include_tasks: pair_linux.yml
+      when: ansible_system == 'Linux'
+
+    - name: "Include Windows pairing tasks"
+      ansible.builtin.include_tasks: pair_windows.yml
+      when: ansible_system == 'Win32NT'
+
+- name: "Include Linux VEN management tasks"
+  ansible.builtin.include_tasks: manage_ven_linux.yml
   when: ansible_system == 'Linux'
   tags:
     - always
 
-- include_tasks: manage_ven_windows.yml
+- name: "Include Windows VEN management tasks"
+  ansible.builtin.include_tasks: manage_ven_windows.yml
   when: ansible_system == 'Win32NT'
   tags:
     - always
