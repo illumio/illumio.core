@@ -312,6 +312,8 @@ import traceback
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible_collections.illumio.core.plugins.module_utils.pce import PceObjectApi, pce_connection_spec  # type: ignore
 
+IMPORT_ERROR_TRACEBACK = ''
+
 try:
     from illumio.workloads import PairingProfile
 except ImportError:
