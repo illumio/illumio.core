@@ -6,7 +6,7 @@
     - always
 
 - name: "Start VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" start
   register: result
   changed_when: "'already started' not in result.stdout"
@@ -15,7 +15,7 @@
     - ven_start
 
 - name: "Stop VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" stop
   register: result
   changed_when: "'FAILED' not in result.stdout"
@@ -24,7 +24,7 @@
     - ven_stop
 
 - name: "Restart VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" restart
   register: result
   changed_when: result.rc == 0
@@ -33,7 +33,7 @@
     - ven_restart
 
 - name: "Suspend the VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" suspend
   register: result
   changed_when: "'The VEN has been suspended' in result.stdout"
@@ -42,7 +42,7 @@
     - ven_suspend
 
 - name: "Unsuspend VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" unsuspend
   register: result
   changed_when: "'The VEN has been unsuspended' in result.stdout"
@@ -51,7 +51,7 @@
     - ven_unsuspend
 
 - name: "Deactivate VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" deactivate
   register: result
   changed_when: "'The VEN has been deactivated' in result.stdout"
@@ -60,7 +60,7 @@
     - ven_deactivate
 
 - name: "Unpair VEN"
-  become: yes
+  become: true
   ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" unpair {{ illumio_ven_firewall_restore }}
   register: result
   changed_when: result.rc == 0
@@ -69,7 +69,7 @@
     - ven_unpair
 
 - name: "Stat VEN control tool"
-  become: yes
+  become: true
   ansible.windows.win_stat:
     path: "{{ illumio_ven_ctl }}"
   register: ven_cli
@@ -85,11 +85,11 @@
   block:
 
     - name: "Get VEN status"
-      become: yes
+      become: true
       ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" status
       failed_when: ven_status.rc > 1
       register: ven_status
-      changed_when: False
+      changed_when: false
 
     - name: "Print VEN status"
       ansible.builtin.debug:

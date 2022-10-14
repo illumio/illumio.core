@@ -37,11 +37,11 @@
       kubernetes.core.k8s:
         namespace: "{{ illumio_kubelink_namespace }}"
         template: "illumio-kubelink-secret.yml.j2"
-        apply: yes
+        apply: true
 
 - name: "Apply Kubelink deployment"
   kubernetes.core.k8s:
     namespace: "{{ illumio_kubelink_namespace }}"
     template: "illumio-kubelink-{{ cluster_type }}.yml.j2"
     state: present
-    apply: yes
+    apply: true

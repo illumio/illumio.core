@@ -12,7 +12,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   check_mode: yes
   register: result
@@ -33,7 +33,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   register: result
 
@@ -70,7 +70,7 @@
     href: "{{ pairing_profile_href }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   check_mode: yes
   register: result
@@ -91,7 +91,7 @@
     href: "{{ pairing_profile_href }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   register: result
 
@@ -112,7 +112,7 @@
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
     enforcement_mode: invalid_value
-    enabled: yes
+    enabled: true
     state: present
   ignore_errors: yes
   register: result
@@ -134,7 +134,7 @@
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
     visibility_level: invalid_value
-    enabled: yes
+    enabled: true
     state: present
   ignore_errors: yes
   register: result
@@ -154,7 +154,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   check_mode: yes
   register: result
@@ -174,7 +174,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Test pairing profile
-    enabled: yes
+    enabled: true
     state: present
   register: result
 
@@ -193,7 +193,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Updated description
-    enabled: yes
+    enabled: true
     state: present
   check_mode: yes
   register: result
@@ -213,7 +213,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ pairing_profile_name }}"
     description: Updated description
-    enabled: yes
+    enabled: true
     state: present
   register: result
 
@@ -289,7 +289,7 @@
     name: "{{ pairing_profile_name }}"
     description: Updated description
     key_lifespan: 120
-    enabled: yes
+    enabled: true
     state: present
   register: result
 
@@ -310,7 +310,7 @@
     name: "{{ pairing_profile_name }}"
     description: Updated description
     allowed_uses_per_key: 1
-    enabled: yes
+    enabled: true
     state: present
   register: result
 

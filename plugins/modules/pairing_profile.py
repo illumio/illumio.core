@@ -139,7 +139,7 @@ EXAMPLES = r'''
   illumio.core.pairing_profile:
     name: PP-DB
     state: present
-    enabled: yes
+    enabled: true
     labels:
       - href: /orgs/1/labels/1
       - href: /orgs/1/labels/2

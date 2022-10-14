@@ -12,14 +12,14 @@
     mode: 0644
 
 - name: "Install compatibility matrix"
-  become: yes
+  become: true
   become_user: "{{ illumio_pce_user }}"
   ansible.builtin.command: "illumio-pce-ctl compatibility-matrix-install '{{ remote_compatibility_matrix_path }}' -x"
   register: result
   changed_when: result.rc == 0
 
 - name: "Install VEN bundle"
-  become: yes
+  become: true
   become_user: "{{ illumio_pce_user }}"
   ansible.builtin.command: >
     illumio-pce-ctl ven-software-install '{{ remote_ven_bundle_path }}' -x --no-prompt

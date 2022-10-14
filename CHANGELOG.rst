@@ -2,8 +2,8 @@
  Changelog
 ===========
 
-Version 0.2.4 (TBD)
--------------------
+Version 0.2.4 (October 14, 2022)
+--------------------------------
 
 IMPROVEMENTS:
 

@@ -96,7 +96,7 @@ ansible-galaxy collection install illumio.core
   - name: Create pairing profile
     illumio.core.pairing_profile:
       name: PP-ANSIBLE
-      enabled: yes
+      enabled: true
       state: present
     register: profile_result
 

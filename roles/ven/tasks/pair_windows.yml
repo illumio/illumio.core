@@ -2,7 +2,7 @@
 # Install VEN on Windows
 
 - name: "Pair Windows VEN"
-  become: yes
+  become: true
   ansible.windows.win_powershell:
     script: |
       param (
@@ -31,7 +31,10 @@
 
       Set-Variable -Name ErrorActionPreference -Value Continue
 
-      (New-Object System.Net.WebClient).DownloadFile("https://$($PceFqdn):$($PcePort)/api/v18/software/ven/image?pair_script=pair.ps1&profile_id=$($PairingProfileId)", "$($env:TEMP)\Pair.ps1")
+      (New-Object System.Net.WebClient).DownloadFile(
+        "https://$($PceFqdn):$($PcePort)/api/v18/software/ven/image?pair_script=pair.ps1&profile_id=$($PairingProfileId)",
+        "$($env:TEMP)\Pair.ps1"
+      )
 
       & $env:TEMP\Pair.ps1 -management-server ${PceFqdn}:${PcePort} -activation-code ${ActivationCode}
     parameters:

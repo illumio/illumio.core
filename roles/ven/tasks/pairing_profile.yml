@@ -13,7 +13,7 @@
     visibility_level: "{{ illumio_ven_visibility_level }}"
     labels: "{{ illumio_ven_labels | list }}"
     ven_version: "{{ illumio_ven_version | default(omit) }}"
-    enabled: yes
+    enabled: true
     state: present
   delegate_to: '127.0.0.1'
   register: pairing_profile_result

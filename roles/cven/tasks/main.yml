@@ -8,7 +8,7 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     name: "{{ illumio_cven_profile_name }}"
     description: "{{ illumio_cven_profile_description }}"
-    enabled: yes
+    enabled: true
     enforcement_mode: "{{ illumio_cven_enforcement_mode }}"
     visibility_level: "{{ illumio_cven_visibility_level }}"
     labels: "{{ illumio_cven_labels | list }}"
@@ -48,7 +48,7 @@
   kubernetes.core.k8s:
     namespace: "{{ illumio_cven_namespace }}"
     template: "illumio-cven-secret.yml.j2"
-    apply: yes
+    apply: true
   when: cven_secret is not defined or not cven_secret
 
 - name: "Apply CVEN deployment"
@@ -56,4 +56,4 @@
     namespace: "{{ illumio_cven_namespace }}"
     template: "illumio-cven-{{ cluster_type }}.yml.j2"
     state: present
-    apply: yes
+    apply: true
