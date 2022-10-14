@@ -2,7 +2,7 @@
 # Install VEN on Linux
 
 - name: "Pair Linux VEN"
-  become: yes
+  become: true
   block:
 
     - name: "Remove VEN data temp directory"
@@ -18,13 +18,20 @@
 
     - name: "Download pairing script"
       ansible.builtin.uri:
-        url: "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v18/software/ven/image?pair_script=pair.sh&profile_id={{ illumio_pairing_profile_id }}"
+        url:
+          "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}\
+           /api/v18/software/ven/image?\
+           pair_script=pair.sh&\
+           profile_id={{ illumio_pairing_profile_id }}"
         method: GET
         dest: /opt/illumio_ven_data/tmp/pair.sh
         mode: 0751
 
     - name: "Run pairing script"
-      ansible.builtin.command: "/opt/illumio_ven_data/tmp/pair.sh --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }} --activation-code {{ illumio_pairing_key }}"
+      ansible.builtin.command: >-
+        /opt/illumio_ven_data/tmp/pair.sh
+          --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }}
+          --activation-code {{ illumio_pairing_key }}
       register: pairing_output
       changed_when: pairing_output.rc == 0
 

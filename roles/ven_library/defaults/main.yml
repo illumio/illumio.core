@@ -8,4 +8,4 @@ illumio_pce_user: ilo-pce
 
 # VEN install options
 illumio_ven_library_orgs_list: all
-illumio_ven_library_set_default: no
+illumio_ven_library_set_default: false

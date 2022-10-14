@@ -6,8 +6,6 @@ readme: README.md
 authors:
   - Duncan Sommerville (@dsommerville-illumio)
 description: Ansible collection for managing resources in the Illumio Policy Compute Engine
-license:
-  - Apache-2.0
 license_file: LICENSE
 tags:
   - illumio
