@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Feature or functionality request for the 'illumio.illumio' Ansible collection
+about: Feature or functionality request for the 'illumio.core' Ansible collection
 ---
 
 <!-- Feature overview -->

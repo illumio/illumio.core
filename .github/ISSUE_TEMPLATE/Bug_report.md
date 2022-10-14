@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report an issue with the 'illumio.illumio' Ansible collection
+about: Report an issue with the 'illumio.core' Ansible collection
 ---
 
 <!-- Problem overview -->

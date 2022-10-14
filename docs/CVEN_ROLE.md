@@ -1,4 +1,4 @@
-# illumio.illumio.cven role  
+# illumio.core.cven role  
 
 - [Container Host Requirements](#container-host-requirements)
     - [CVEN Compatibility](#cven-compatibility)
@@ -33,11 +33,11 @@ PCE Version  | CVEN 19.3.6 | CVEN 21.1 | CVEN 21.2 | CVEN 21.5
 
 ## Installation  
 
-You can install this role with: `ansible-galaxy install illumio.illumio.cven`  
+You can install this role with: `ansible-galaxy install illumio.core.cven`  
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible host.  
+This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
 
 The `cven` role depends on the `kubelink` role in order to function - see the `kubelink` [requirements](KUBELINK_ROLE.md#requirements).  
 
@@ -67,7 +67,7 @@ illumio_cven_container_version=21.5.40-8601
   hosts: kube
   gather_facts: yes
   roles:
-    - role: illumio.illumio.cven
+    - role: illumio.core.cven
 ```
 
 ## Role Variables  

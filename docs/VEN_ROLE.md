@@ -1,4 +1,4 @@
-# illumio.illumio.ven role  
+# illumio.core.ven role  
 
 - [Host Requirements](#host-requirements)
     - [Operating System](#operating-system)
@@ -48,11 +48,11 @@ See the [Illumio Support dependencies page](https://support.illumio.com/software
 
 ## Installation  
 
-You can install this role with: `ansible-galaxy install illumio.illumio.ven`
+You can install this role with: `ansible-galaxy install illumio.core.ven`
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible host.  
+This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
 
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. For this role, make sure the following collections are installed:  
 
@@ -61,7 +61,7 @@ ansible-galaxy collection install ansible.windows
 ansible-galaxy collection install community.general
 ```
 
-> **Note:** these dependencies are included when installing the `illumio` collection with `ansible-galaxy collection install illumio.illumio`  
+> **Note:** these dependencies are included when installing the `illumio.core` collection with `ansible-galaxy collection install illumio.core`  
 
 ## Usage Examples  
 
@@ -83,7 +83,7 @@ ansible_python_interpreter=/usr/bin/python3
   hosts: apache_servers
   gather_facts: yes
   roles:
-    - role: illumio.illumio.ven
+    - role: illumio.core.ven
 ```
 
 **Example commands**  
@@ -139,13 +139,13 @@ Used when running the role with the [`ven_unpair`](#ven_unpair) tag.
 
 ## Tags  
 
-VEN management operations can be run by specifying one of the tags below when running the `illumio.illumio.ven` role.  
+VEN management operations can be run by specifying one of the tags below when running the `illumio.core.ven` role.  
 
 See the chapter on [VEN State](https://docs.illumio.com/core/21.5/Content/Guides/ven-administration/ven-state/_ch-ven-state.htm) in the VEN adminisrtation guide for more detailed explanations of each state.  
 
 ### ven_pair  
 
-The default behaviour for the `illumio.illumio.ven` role. Creates a pairing profile (or uses an existing one if `illumio_ven_profile_name` is passed) and generates a pairing key to pair remote workloads with the PCE.  
+The default behaviour for the `illumio.core.ven` role. Creates a pairing profile (or uses an existing one if `illumio_ven_profile_name` is passed) and generates a pairing key to pair remote workloads with the PCE.  
 
 ### ven_start  
 

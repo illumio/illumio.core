@@ -63,7 +63,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          path: ansible_collections/illumio/illumio
+          path: ansible_collections/illumio/core
 
       - name: Set up Python ${{ matrix.ansible }}
         uses: actions/setup-python@v3
@@ -75,4 +75,4 @@ jobs:
 
       - name: Run sanity tests
         run: ansible-test sanity --docker -v --color --python ${{ matrix.python }}
-        working-directory: ./ansible_collections/illumio/illumio
+        working-directory: ./ansible_collections/illumio/core

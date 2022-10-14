@@ -9,4 +9,4 @@ build:
 	@ansible-galaxy collection build --output-path dist/ --force
 
 install:
-	@ansible-galaxy collection install dist/illumio-illumio-$(PKG_VERSION).tar.gz --upgrade --force
+	@ansible-galaxy collection install dist/illumio-core-$(PKG_VERSION).tar.gz --upgrade --force

@@ -1,6 +1,6 @@
 ---
 namespace: illumio
-name: illumio
+name: core
 version: 0.2.3
 readme: README.md
 authors:
@@ -19,7 +19,7 @@ dependencies:
   ansible.windows: '*'
   community.general: '*'
   kubernetes.core: '*'
-repository: https://github.com/dsommerville-illumio/illumio-ansible
+repository: https://github.com/illumio/illumio.core
 build_ignore:
   - '.github'
   - '.gitignore'
