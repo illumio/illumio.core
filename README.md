@@ -1,6 +1,6 @@
 # Ansible Collection - illumio.core  
 
-> **NOTE:** this collection is currently under development, and is **not yet available through Galaxy or Ansible Automation Platform**. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
+> **NOTE:** this collection is currently under development, and is **not yet available on Ansible Automation Platform**. If you are interested in learning more about the project, please reach out to the [Illumio Integrations team](mailto:app-integrations@illumio.com).  
 
 - [Overview](#overview)
 - [Collection Contents](#collection-contents)
