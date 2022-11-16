@@ -87,7 +87,7 @@
     - name: "Get VEN status"
       become: true
       ansible.windows.win_command: powershell.exe -file "{{ illumio_ven_ctl }}" status
-      failed_when: ven_status.rc > 1
+      failed_when: ven_status.rc is not defined or ven_status.rc > 1
       register: ven_status
       changed_when: false
 
