@@ -2,6 +2,13 @@
  Changelog
 ===========
 
+Version 0.2.5 (November 16, 2022)
+---------------------------------
+
+BUG FIXES:
+
+* check if ven_status.rc is defined in ven_status task failed_when clause
+
 Version 0.2.4 (October 14, 2022)
 --------------------------------
 
