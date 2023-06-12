@@ -38,7 +38,7 @@ You can install this role with: `ansible-galaxy install illumio.core.kubelink`
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
+This module requires Python 3.8+ and the `illumio` python package installed on the Ansible controller.  
 
 You must have an existing container repository containing the Kubelink Docker image. See the [Kubelink documentation](https://docs.illumio.com/core/21.5/Content/Guides/kubernetes-and-openshift/deployment/deploy-kubelink-in-your-cluster.htm?Highlight=kubelink) for details.  
 

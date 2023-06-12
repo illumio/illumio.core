@@ -52,7 +52,7 @@ You can install this role with: `ansible-galaxy install illumio.core.ven`
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
+This module requires Python 3.8+ and the `illumio` python package installed on the Ansible controller.  
 
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. For this role, make sure the following collections are installed:  
 

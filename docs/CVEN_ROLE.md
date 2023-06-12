@@ -37,7 +37,7 @@ You can install this role with: `ansible-galaxy install illumio.core.cven`
 
 ### Requirements  
 
-This module requires Python 3.6+ and the `illumio` python package installed on the Ansible controller.  
+This module requires Python 3.8+ and the `illumio` python package installed on the Ansible controller.  
 
 The `cven` role depends on the `kubelink` role in order to function - see the `kubelink` [requirements](KUBELINK_ROLE.md#requirements).  
 

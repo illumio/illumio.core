@@ -50,7 +50,7 @@ ansible-test integration
 
 ### Sanity Tests  
 
-Sanity tests are automatically run for `ansible>=2.9` and `python>=3.6` through the `.github/workflows/sanity.yml` action. You can run local sanity tests using `ansible-test sanity` to make sure your changes adhere to Ansible style standards.  
+Sanity tests are automatically run for `ansible>=2.12` and `python==3.9` through the `.github/workflows/sanity.yml` action. You can run local sanity tests using `ansible-test sanity` to make sure your changes adhere to Ansible style standards.  
 
 This project also adheres to [`ansible-lint`](https://ansible-lint.readthedocs.io/en/latest/) standards.  
 

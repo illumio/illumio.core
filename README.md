@@ -41,9 +41,7 @@ The collection provides Ansible plugins and roles to automate Virtual Enforcemen
 
 ### Requirements  
 
-Python version **3.6** or higher is required for this collection.  
-
-> **Note:** the minimum Python version has been bumped to **3.8** as of Ansible version **2.11**  
+Python version **3.8** or higher is required for this collection.  
 
 **Python**  
 
@@ -61,7 +59,7 @@ $ pip install pywinrm
 
 **Ansible**  
 
-This collection works with Ansible versions **2.9** and above.  
+This collection works with Ansible versions **2.12** and above.  
 
 In Ansible 2.10 and higher, modules have been moved into collections. Additional collections beyond `ansible.builtin` must now be installed explicitly. The `illumio.core` collection depends on the following collections:  
 
