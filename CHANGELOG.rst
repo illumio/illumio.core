@@ -2,8 +2,11 @@
  Changelog
 ===========
 
-Version 0.2.5 (TBD)
--------------------
+Version 0.2.5 (June 12, 2023)
+-----------------------------
+
+* remove support for EOL Ansible versions (2.9, 2.10, 2.11)
+* update roles to support v2.14+ linting rules
 
 BUG FIXES:
 
