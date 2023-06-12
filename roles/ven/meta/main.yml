@@ -18,7 +18,7 @@ galaxy_info:
         - '2017.03'
         - '2016.09'
         - '2016.03'
-    - name: Amazon Linux 2
+    - name: Amazon Linux
       versions:
         - all
     - name: Debian

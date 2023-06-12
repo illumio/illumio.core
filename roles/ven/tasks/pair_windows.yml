@@ -40,5 +40,5 @@
     parameters:
       PceFqdn: "{{ illumio_pce_hostname }}"
       PcePort: "{{ illumio_pce_port }}"
-      PairingProfileId: "{{ illumio_pairing_profile_id }}"
-      ActivationCode: "{{ illumio_pairing_key }}"
+      PairingProfileId: "{{ ven_pairing_profile_id }}"
+      ActivationCode: "{{ ven_pairing_key }}"

@@ -16,11 +16,11 @@
     enabled: true
     state: present
   delegate_to: '127.0.0.1'
-  register: pairing_profile_result
+  register: ven_pairing_profile_result
 
 - name: "Set pairing profile ID"
   ansible.builtin.set_fact:
-    illumio_pairing_profile_id: "{{ pairing_profile_result.pairing_profile['href'] | split('/') | last }}"
+    ven_pairing_profile_id: "{{ ven_pairing_profile_result.pairing_profile['href'] | split('/') | last }}"
 
 - name: "Get new pairing key"
   illumio.core.pairing_key:
@@ -31,8 +31,8 @@
     api_key_secret: "{{ illumio_pce_api_secret }}"
     pairing_profile_name: "{{ illumio_ven_profile_name }}"
   delegate_to: '127.0.0.1'
-  register: pairing_key_result
+  register: ven_pairing_key_result
 
 - name: "Set pairing key"
   ansible.builtin.set_fact:
-    illumio_pairing_key: "{{ pairing_key_result.pairing_key }}"
+    ven_pairing_key: "{{ ven_pairing_key_result.pairing_key }}"
