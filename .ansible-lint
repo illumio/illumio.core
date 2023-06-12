@@ -1,6 +1,7 @@
 ---
 # .ansible-lint
 exclude_paths:
+  - venv/
   - .cache/ # implicit unless exclude_paths is defined in config
   - .github/
   - molecule/
@@ -16,6 +17,11 @@ enable_list:
   # add yaml here if you want to avoid ignoring yaml checks when yamllint
   # library is missing. Normally its absence just skips using that rule.
   - yaml
+
+skip_list:
+  - experimental
+  # AAP requires semver 1.0.0 or higher, but we currently only publish to Galaxy
+  - galaxy[version-incorrect]
 
 # Offline mode disables installation of requirements.yml
 offline: false

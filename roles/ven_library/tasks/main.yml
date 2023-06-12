@@ -15,8 +15,8 @@
   become: true
   become_user: "{{ illumio_pce_user }}"
   ansible.builtin.command: "illumio-pce-ctl compatibility-matrix-install '{{ remote_compatibility_matrix_path }}' -x"
-  register: result
-  changed_when: result.rc == 0
+  register: ven_library_result
+  changed_when: ven_library_result.rc == 0
 
 - name: "Install VEN bundle"
   become: true
@@ -25,5 +25,5 @@
     illumio-pce-ctl ven-software-install '{{ remote_ven_bundle_path }}' -x --no-prompt
     --orgs '{{ illumio_ven_library_orgs_list }}'
     {{ illumio_ven_library_set_default | ternary('--default', '', '') }}
-  register: result
-  changed_when: result.rc == 0
+  register: ven_library_result
+  changed_when: ven_library_result.rc == 0

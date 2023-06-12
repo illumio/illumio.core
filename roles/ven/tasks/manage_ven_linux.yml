@@ -1,69 +1,69 @@
 ---
 - name: "Set illumio-ven-ctl path for Linux"
   ansible.builtin.set_fact:
-    illumio_ven_ctl: /opt/illumio_ven/illumio-ven-ctl
+    ven_ctl: /opt/illumio_ven/illumio-ven-ctl
   tags:
     - always
 
 - name: "Start VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} start"
-  register: result
-  changed_when: "'already started' not in result.stdout"
+  ansible.builtin.command: "{{ ven_ctl }} start"
+  register: ven_result
+  changed_when: "'already started' not in ven_result.stdout"
   tags:
     - never
     - ven_start
 
 - name: "Stop VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} stop"
-  register: result
-  changed_when: "'FAILED' not in result.stdout"
+  ansible.builtin.command: "{{ ven_ctl }} stop"
+  register: ven_result
+  changed_when: "'FAILED' not in ven_result.stdout"
   tags:
     - never
     - ven_stop
 
 - name: "Restart VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} restart"
-  register: result
-  changed_when: result.rc == 0
+  ansible.builtin.command: "{{ ven_ctl }} restart"
+  register: ven_result
+  changed_when: ven_result.rc == 0
   tags:
     - never
     - ven_restart
 
 - name: "Suspend the VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} suspend"
-  register: result
-  changed_when: "'The VEN has been suspended' in result.stdout"
+  ansible.builtin.command: "{{ ven_ctl }} suspend"
+  register: ven_result
+  changed_when: "'The VEN has been suspended' in ven_result.stdout"
   tags:
     - never
     - ven_suspend
 
 - name: "Unsuspend VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} unsuspend"
-  register: result
-  changed_when: "'The VEN has been unsuspended' in result.stdout"
+  ansible.builtin.command: "{{ ven_ctl }} unsuspend"
+  register: ven_result
+  changed_when: "'The VEN has been unsuspended' in ven_result.stdout"
   tags:
     - never
     - ven_unsuspend
 
 - name: "Deactivate VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} deactivate"
-  register: result
-  changed_when: "'The VEN has been deactivated' in result.stdout"
+  ansible.builtin.command: "{{ ven_ctl }} deactivate"
+  register: ven_result
+  changed_when: "'The VEN has been deactivated' in ven_result.stdout"
   tags:
     - never
     - ven_deactivate
 
 - name: "Unpair VEN"
   become: true
-  ansible.builtin.command: "{{ illumio_ven_ctl }} unpair {{ illumio_ven_firewall_restore }}"
-  register: result
-  changed_when: result.rc == 0
+  ansible.builtin.command: "{{ ven_ctl }} unpair {{ illumio_ven_firewall_restore }}"
+  register: ven_result
+  changed_when: ven_result.rc == 0
   tags:
     - never
     - ven_unpair
@@ -71,7 +71,7 @@
 - name: "Stat VEN control tool"
   become: true
   ansible.builtin.stat:
-    path: "{{ illumio_ven_ctl }}"
+    path: "{{ ven_ctl }}"
   register: ven_cli
   tags:
     - always
@@ -86,8 +86,8 @@
 
     - name: "Get VEN status"
       become: true
-      ansible.builtin.command: "{{ illumio_ven_ctl }} status"
-      failed_when: ven_status.rc > 1
+      ansible.builtin.command: "{{ ven_ctl }} status"
+      failed_when: ven_status.rc is not defined or ven_status.rc > 1
       register: ven_status
       changed_when: false
 

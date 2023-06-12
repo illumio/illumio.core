@@ -22,7 +22,7 @@
           "https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}\
            /api/v18/software/ven/image?\
            pair_script=pair.sh&\
-           profile_id={{ illumio_pairing_profile_id }}"
+           profile_id={{ ven_pairing_profile_id }}"
         method: GET
         dest: /opt/illumio_ven_data/tmp/pair.sh
         mode: 0751
@@ -31,10 +31,10 @@
       ansible.builtin.command: >-
         /opt/illumio_ven_data/tmp/pair.sh
           --management-server {{ illumio_pce_hostname }}:{{ illumio_pce_port }}
-          --activation-code {{ illumio_pairing_key }}
-      register: pairing_output
-      changed_when: pairing_output.rc == 0
+          --activation-code {{ ven_pairing_key }}
+      register: ven_pairing_output
+      changed_when: ven_pairing_output.rc == 0
 
     - name: "Pairing script output"
       ansible.builtin.debug:
-        var: pairing_output.stdout_lines
+        var: ven_pairing_output.stdout_lines

@@ -15,7 +15,7 @@
     ven_version: "{{ illumio_cven_ven_version | default(omit) }}"
     state: present
   delegate_to: '127.0.0.1'
-  register: pairing_profile_result
+  register: cven_pairing_profile_result
 
 - name: "Generate pairing key"
   illumio.core.pairing_key:
@@ -24,13 +24,13 @@
     pce_org_id: "{{ illumio_pce_org_id }}"
     api_key_username: "{{ illumio_pce_api_key }}"
     api_key_secret: "{{ illumio_pce_api_secret }}"
-    pairing_profile_href: "{{ pairing_profile_result.pairing_profile['href'] }}"
+    pairing_profile_href: "{{ cven_pairing_profile_result.pairing_profile['href'] }}"
   delegate_to: '127.0.0.1'
-  register: pairing_key_result
+  register: cven_pairing_key_result
 
 - name: "Set pairing key"
   ansible.builtin.set_fact:
-    illumio_pairing_key: "{{ pairing_key_result.pairing_key }}"
+    cven_pairing_key: "{{ cven_pairing_key_result.pairing_key }}"
 
 - name: "Check for CVEN secret"
   kubernetes.core.k8s_info:
@@ -38,11 +38,11 @@
     kind: Secret
     name: "{{ illumio_cven_secret_name }}"
     namespace: "{{ illumio_cven_namespace }}"
-  register: secret_info
+  register: cven_secret_info
 
 - name: "Read CVEN secret"
   ansible.builtin.set_fact:
-    cven_secret: "{{ secret_info.resources[0] | default('', true) }}"
+    cven_secret: "{{ cven_secret_info.resources[0] | default('', true) }}"
 
 - name: "Apply CVEN secret"
   kubernetes.core.k8s:

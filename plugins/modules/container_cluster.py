@@ -33,8 +33,9 @@ options:
       - Required for creating a container cluster or when C(href) is not specified.
     type: str
   description:
-      description: Container cluster description.
-      type: str
+    description: Container cluster description.
+    type: str
+    default: ''
   state:
     description:
       - Desired container cluster state.

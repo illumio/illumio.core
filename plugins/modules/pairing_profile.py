@@ -33,6 +33,7 @@ options:
   description:
     description: Pairing profile description.
     type: str
+    default: ''
   state:
     description:
       - Desired pairing profile state.

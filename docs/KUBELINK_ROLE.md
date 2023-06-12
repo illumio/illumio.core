@@ -105,8 +105,8 @@ By default, a new container cluster with a randomized suffix will be created (e.
 
 Variable | Description | Data Type | Default value
 -------- | ----------- | --------- | -------------
-`illumio_container_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `illumio_container_cluster_name` | `str` | -
-`illumio_container_cluster_name` | Existing container cluster name | `str` | -
+`kubelink_cluster_token` | Container cluster token to store in the Kubelink secret. Must be set if using `kubelink_cluster_name` | `str` | -
+`kubelink_cluster_name` | Existing container cluster name | `str` | -
 
 ### Kubelink
 

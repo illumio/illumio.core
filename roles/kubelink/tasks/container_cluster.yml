@@ -1,8 +1,8 @@
 ---
 - name: "Generate container cluster name"
   ansible.builtin.set_fact:
-    illumio_container_cluster_name: "CC-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
-  when: illumio_container_cluster_name is not defined
+    kubelink_cluster_name: "CC-ANSIBLE-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+  when: kubelink_cluster_name is not defined
 
 - name: "Create container cluster"
   illumio.core.container_cluster:
@@ -11,22 +11,22 @@
     pce_org_id: "{{ illumio_pce_org_id }}"
     api_key_username: "{{ illumio_pce_api_key }}"
     api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ illumio_container_cluster_name }}"
+    name: "{{ kubelink_cluster_name }}"
     description: Container cluster created by Ansible
     state: present
   delegate_to: '127.0.0.1'
-  register: container_cluster_result
+  register: kubelink_cluster_result
 
 - name: "Fail if cluster token is missing"
   ansible.builtin.fail:
-    msg: "illumio_container_cluster_token is not defined. Did you specify illumio_container_cluster_name without setting the token?"
-  when: illumio_container_cluster_token is not defined and 'container_cluster_token' not in container_cluster_result.container_cluster
+    msg: "kubelink_cluster_token is not defined. Did you specify kubelink_cluster_name without setting the token?"
+  when: kubelink_cluster_token is not defined and 'container_cluster_token' not in kubelink_cluster_result.container_cluster
 
 - name: "Set container cluster ID"
   ansible.builtin.set_fact:
-    illumio_container_cluster_id: "{{ container_cluster_result.container_cluster['href'] | split('/') | last }}"
+    kubelink_cluster_id: "{{ kubelink_cluster_result.container_cluster['href'] | split('/') | last }}"
 
 - name: "Set container cluster token"
   ansible.builtin.set_fact:
-    illumio_container_cluster_token: "{{ container_cluster_result.container_cluster['container_cluster_token'] }}"
-  when: illumio_container_cluster_token is not defined
+    kubelink_cluster_token: "{{ kubelink_cluster_result.container_cluster['container_cluster_token'] }}"
+  when: kubelink_cluster_token is not defined
