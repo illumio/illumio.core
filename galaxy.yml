@@ -1,7 +1,7 @@
 ---
 namespace: illumio
 name: core
-version: 0.2.4
+version: 0.2.5
 readme: README.md
 authors:
   - Duncan Sommerville (@dsommerville-illumio)
