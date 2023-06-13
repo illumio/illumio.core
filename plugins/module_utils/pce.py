@@ -50,6 +50,22 @@ class PceApiBase(object):
 class PceObjectApi(PceApiBase, metaclass=ABCMeta):
     _api: object
 
+    def get(self, **kwargs) -> Any:
+        try:
+            return self._api.get(**kwargs)
+        except IllumioApiException as e:
+            self._module.fail_json(msg="Failed to get PCE objects: %s" % (e))
+
+    def get_one(self, params: dict) -> Any:
+        try:
+            params = {**(params or {}), 'max_results': 1}
+            objects = self._api.get(params=params)
+            if not objects:
+                return None
+            return objects[0]
+        except IllumioApiException as e:
+            self._module.fail_json(msg="Failed to get PCE object: %s" % (e))
+
     def get_by_href(self, href: str) -> Any:
         try:
             return self._api.get_by_reference(href)
@@ -57,13 +73,7 @@ class PceObjectApi(PceApiBase, metaclass=ABCMeta):
             self._module.fail_json(msg="Failed to get PCE object with HREF %s: %s" % (href, e))
 
     def get_by_name(self, name: str) -> Any:
-        try:
-            objects = self._api.get(params={'name': name, 'max_results': 1})
-            if not objects:
-                return None
-            return objects[0]
-        except IllumioApiException as e:
-            self._module.fail_json(msg="Failed to get PCE object with name %s: %s" % (name, e))
+        return self.get_one({'name': name})
 
     def create(self, o: Any) -> Any:
         try:
