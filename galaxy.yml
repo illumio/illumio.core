@@ -28,6 +28,7 @@ build_ignore:
   - 'build'
   - 'dist'
   - 'local'
+  - 'demo'
   - 'venv'
   - 'molecule'
   - '**/integration_config.yml'

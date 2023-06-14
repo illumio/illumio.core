@@ -33,3 +33,4 @@ _version.py
 
 # local testing files
 local/
+demo/

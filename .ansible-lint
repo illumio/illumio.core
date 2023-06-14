@@ -5,6 +5,8 @@ exclude_paths:
   - venv/
   - .github/
   - molecule/
+  - local/
+  - demo/
 
 use_default_rules: true
 
