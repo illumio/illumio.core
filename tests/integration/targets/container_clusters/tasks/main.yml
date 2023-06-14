@@ -1,218 +1,172 @@
 ---
-- name: Set randomly generated container cluster name
-  ansible.builtin.set_fact:
-    container_cluster_name: "{{ integration_prefix }}-CC-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+- name: Run Container Cluster module integration tests
+  module_defaults:
+    illumio.core.container_cluster:
+      pce_hostname: "{{ illumio_pce_hostname }}"
+      pce_port: "{{ illumio_pce_port }}"
+      pce_org_id: "{{ illumio_pce_org_id }}"
+      api_key_username: "{{ illumio_pce_api_key }}"
+      api_key_secret: "{{ illumio_pce_api_secret }}"
+  block:
+  - name: Set randomly generated container cluster name
+    ansible.builtin.set_fact:
+      container_cluster_name: "{{ integration_prefix }}-CC-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
-- name: Test check mode for container cluster creation
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for container cluster creation
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a new container cluster is successful and indicates a change
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
+  - name: Assert that check mode for a new container cluster is successful and indicates a change
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
 
-- name: Test container cluster creation
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  register: result
+  - name: Test container cluster creation
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    register: result
 
-- name: Assert that the container cluster was created successfully
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - "'container_cluster_token' in result.container_cluster"
-      - result.container_cluster.name == '{{ container_cluster_name }}'
+  - name: Assert that the container cluster was created successfully
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - "'container_cluster_token' in result.container_cluster"
+        - result.container_cluster.name == '{{ container_cluster_name }}'
 
-- name: Store container cluster HREF
-  ansible.builtin.set_fact:
-    container_cluster_href: "{{ result.container_cluster['href'] }}"
+  - name: Store container cluster HREF
+    ansible.builtin.set_fact:
+      container_cluster_href: "{{ result.container_cluster['href'] }}"
 
-- name: Test check mode for referencing present container cluster using HREF
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ container_cluster_href }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for referencing present container cluster using HREF
+    illumio.core.container_cluster:
+      href: "{{ container_cluster_href }}"
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a container cluster referenced by HREF with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that check mode for a container cluster referenced by HREF with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test that container clusters can be referenced using HREF
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ container_cluster_href }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test that container clusters can be referenced using HREF
+    illumio.core.container_cluster:
+      href: "{{ container_cluster_href }}"
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that a container cluster referenced by HREF with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that a container cluster referenced by HREF with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test check mode for present container cluster without changes
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for present container cluster without changes
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a present container cluster with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that check mode for a present container cluster with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test present container cluster without changes
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Test container cluster
-    state: present
-  register: result
+  - name: Test present container cluster without changes
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Test container cluster
+      state: present
+    register: result
 
-- name: Assert that referencing a present container cluster with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
-      - "'container_cluster_token' not in result.container_cluster"
+  - name: Assert that referencing a present container cluster with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
+        - "'container_cluster_token' not in result.container_cluster"
 
-- name: Test check mode for container cluster update
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Updated description
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for container cluster update
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Updated description
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a container cluster update returns successfully with updates
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
+  - name: Assert that check mode for a container cluster update returns successfully with updates
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
 
-- name: Test container cluster update
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    description: Updated description
-    state: present
-  register: result
+  - name: Test container cluster update
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      description: Updated description
+      state: present
+    register: result
 
-- name: Assert that a pairing profile update returns successfully with updated values
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.container_cluster['description'] == 'Updated description'
+  - name: Assert that a pairing profile update returns successfully with updated values
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.container_cluster['description'] == 'Updated description'
 
-- name: Test check mode for container cluster deletion
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    state: absent
-  check_mode: yes
-  register: result
+  - name: Test check mode for container cluster deletion
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      state: absent
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for absent state returns successfully
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
+  - name: Assert that check mode for absent state returns successfully
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
 
-- name: Test container cluster deletion
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    name: "{{ container_cluster_name }}"
-    state: absent
-  register: result
+  - name: Test container cluster deletion
+    illumio.core.container_cluster:
+      name: "{{ container_cluster_name }}"
+      state: absent
+    register: result
 
-- name: Assert that setting absent state returns successfully with an empty object
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.container_cluster == {}
+  - name: Assert that setting absent state returns successfully with an empty object
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.container_cluster == {}
 
-- name: Test that the container cluster has been removed
-  illumio.core.container_cluster:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ container_cluster_href }}"
-    state: present
-  check_mode: yes
-  ignore_errors: yes
-  register: result
+  - name: Test that the container cluster has been removed
+    illumio.core.container_cluster:
+      href: "{{ container_cluster_href }}"
+      state: present
+    check_mode: yes
+    ignore_errors: yes
+    register: result
 
-- name: Assert that passing an invalid HREF causes the module to fail with the expected error message
-  ansible.builtin.assert:
-    that:
-      - result is failed
-      - "result.msg == 'Failed to get PCE object with HREF {{ container_cluster_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ container_cluster_href }}'"
+  - name: Assert that passing an invalid HREF causes the module to fail with the expected error message
+    ansible.builtin.assert:
+      that:
+        - result is failed
+        - "result.msg == 'Failed to get PCE object with HREF {{ container_cluster_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ container_cluster_href }}'"

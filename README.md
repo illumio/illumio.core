@@ -29,6 +29,7 @@ The collection provides Ansible plugins and roles to automate Virtual Enforcemen
 - [pairing_profile](plugins/modules/pairing_profile.py)
 - [pairing_key](plugins/modules/pairing_key.py)
 - [container_cluster](plugins/modules/container_cluster.py)
+- [label](plugins/modules/label.py)
 
 ### Roles  
 
