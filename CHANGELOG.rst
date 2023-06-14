@@ -2,6 +2,13 @@
  Changelog
 ===========
 
+Version 0.2.6 (TBD)
+-------------------
+
+FEATURES:
+
+* Label module - create/update/delete label objects in the PCE
+
 Version 0.2.5 (June 12, 2023)
 -----------------------------
 
