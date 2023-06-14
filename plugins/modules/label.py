@@ -176,7 +176,9 @@ class LabelApi(PceObjectApi):
 def spec():
     return dict(
         href=dict(type='str'),
-        key=dict(type='str'),
+        # explicitly set no_log to false to avoid ansible-lint false positive
+        # see https://docs.ansible.com/ansible-core/devel/dev_guide/testing/sanity/validate-modules.html
+        key=dict(type='str', no_log=False),
         value=dict(type='str'),
         state=dict(
             type='str',
