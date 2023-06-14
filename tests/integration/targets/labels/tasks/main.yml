@@ -1,5 +1,13 @@
 ---
-- block:
+- name: Run Label module integration tests
+  module_defaults:
+    illumio.core.label:
+      pce_hostname: "{{ illumio_pce_hostname }}"
+      pce_port: "{{ illumio_pce_port }}"
+      pce_org_id: "{{ illumio_pce_org_id }}"
+      api_key_username: "{{ illumio_pce_api_key }}"
+      api_key_secret: "{{ illumio_pce_api_secret }}"
+  block:
   - name: Set randomly generated label value
     ansible.builtin.set_fact:
       label_value: "{{ integration_prefix }}-L-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
@@ -216,11 +224,3 @@
       that:
         - result is failed
         - "result.msg == 'Failed to get PCE object with HREF {{ invalid_label_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ invalid_label_href }}'"
-
-  module_defaults:
-    illumio.core.label:
-      pce_hostname: "{{ illumio_pce_hostname }}"
-      pce_port: "{{ illumio_pce_port }}"
-      pce_org_id: "{{ illumio_pce_org_id }}"
-      api_key_username: "{{ illumio_pce_api_key }}"
-      api_key_secret: "{{ illumio_pce_api_secret }}"
