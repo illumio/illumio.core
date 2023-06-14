@@ -40,8 +40,32 @@ class PceApiBase(object):
         api_key_username = module.params.get('api_key_username')
         api_key_secret = module.params.get('api_key_secret')
 
+        pce_tls_verify = module.params.get('pce_tls_verify')
+        pce_tls_ca = module.params.get('pce_tls_ca')
+        pce_tls_client_certs = module.params.get('pce_tls_client_certs')
+        pce_http_proxy = module.params.get('pce_http_proxy')
+        pce_https_proxy = module.params.get('pce_https_proxy')
+
+        if pce_tls_client_certs:
+            # per requests cert formatting, use the str if only one
+            # path is given, otherwise bundle paths as a tuple
+            if len(pce_tls_client_certs) == 1:
+                pce_tls_client_certs = pce_tls_client_certs[0]
+            else:
+                pce_tls_client_certs = tuple(pce_tls_client_certs)
+
         self._pce = PolicyComputeEngine(hostname, port=port, org_id=org_id)
         self._pce.set_credentials(api_key_username, api_key_secret)
+        self._pce.set_tls_settings(
+            verify=pce_tls_ca or pce_tls_verify,
+            cert=pce_tls_client_certs
+        )
+
+        if pce_http_proxy or pce_https_proxy:
+            self._pce.set_proxies(
+                http_proxy=pce_http_proxy,
+                https_proxy=pce_https_proxy
+            )
 
         if not self._pce.check_connection():
             module.fail_json("Failed to establish a connection to the PCE.")
@@ -146,5 +170,10 @@ def pce_connection_spec() -> dict:
             required=True,
             no_log=True,
             fallback=(env_fallback, ['ILLUMIO_API_KEY_SECRET'])
-        )
+        ),
+        pce_tls_verify=dict(type='bool', default=True),
+        pce_tls_ca=dict(type='str'),
+        pce_tls_client_certs=dict(type='list', elements='str'),
+        pce_http_proxy=dict(type='str'),
+        pce_https_proxy=dict(type='str'),
     )
