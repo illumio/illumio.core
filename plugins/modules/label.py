@@ -243,13 +243,21 @@ def main():
         if not existing_label:
             label = label_api.create(new_label)
             changed = True
+        elif existing_label.deleted or (not new_label.key and not new_label.value):
+            module.exit_json(changed=False, label=label_api.json_output(existing_label))
         else:
-            new_label.key = None  # label key can't be changed once it's created
+            # label key can't be changed once it's created
+            if new_label.key != existing_label.key:
+                module.fail_json("Unable to update key of existing label")
+            new_label.key = None  # null the key so it isn't passed in the request
             changed = label_api.update(existing_label, new_label)
             label = label_api.get_by_href(existing_label.href) if changed else existing_label
     elif state == 'absent':
         if module.check_mode:
             module.exit_json(changed=True, label={})
+
+        if not existing_label or existing_label.deleted:
+            module.exit_json(changed=False, label={})
 
         changed = label_api.delete(existing_label)
         label = {}
