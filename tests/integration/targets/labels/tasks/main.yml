@@ -1,287 +1,226 @@
 ---
-- name: Set randomly generated label value
-  ansible.builtin.set_fact:
-    label_value: "{{ integration_prefix }}-L-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+- block:
+  - name: Set randomly generated label value
+    ansible.builtin.set_fact:
+      label_value: "{{ integration_prefix }}-L-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
-- name: Test check mode for label creation
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for label creation
+    illumio.core.label:
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a new label is successful and indicates a change
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.label['value'] == label_value
+  - name: Assert that check mode for a new label is successful and indicates a change
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.label['value'] == label_value
 
-- name: Test invalid label key
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: invalidvalue
-    value: "{{ label_value }}"
-    state: present
-  ignore_errors: yes
-  register: result
+  - name: Test invalid label key
+    illumio.core.label:
+      key: invalidvalue
+      value: "{{ label_value }}"
+      state: present
+    ignore_errors: yes
+    register: result
 
-- name: Assert that passing an invalid key causes the module to fail with the expected error message
-  ansible.builtin.assert:
-    that:
-      - result is failed
-      - "result.msg == 'Failed to create PCE object: API call returned error code 406. Errors:\nlabel_key_not_supported: Label key is not supported'"
+  - name: Assert that passing an invalid key causes the module to fail with the expected error message
+    ansible.builtin.assert:
+      that:
+        - result is failed
+        - "result.msg == 'Failed to create PCE object: API call returned error code 406. Errors:\nlabel_key_not_supported: Label key is not supported'"
 
-- name: Test label creation
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  register: result
+  - name: Test label creation
+    illumio.core.label:
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    register: result
 
-- name: Assert that the label was created successfully and default values are set
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.label['key'] == 'app'
-      - result.label['value'] == label_value
+  - name: Assert that the label was created successfully and default values are set
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.label['key'] == 'app'
+        - result.label['value'] == label_value
 
-- name: Store label HREF
-  ansible.builtin.set_fact:
-    label_href: "{{ result.label['href'] }}"
+  - name: Store label HREF
+    ansible.builtin.set_fact:
+      label_href: "{{ result.label['href'] }}"
 
-- name: Test check mode for referencing present label using HREF
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for referencing present label using HREF
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a label referenced by HREF with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that check mode for a label referenced by HREF with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test that labels can be referenced by HREF
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  register: result
+  - name: Test that labels can be referenced by HREF
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    register: result
 
-- name: Assert that a label referenced by HREF with identical values returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that a label referenced by HREF with identical values returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test check mode for present label without changes
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for present label without changes
+    illumio.core.label:
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a present label with identical key/value returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that check mode for a present label with identical key/value returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Test present label without changes
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: app
-    value: "{{ label_value }}"
-    state: present
-  register: result
+  - name: Test present label without changes
+    illumio.core.label:
+      key: app
+      value: "{{ label_value }}"
+      state: present
+    register: result
 
-- name: Assert that referencing a present label with identical key/value returns successfully with no changes
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
+  - name: Assert that referencing a present label with identical key/value returns successfully with no changes
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
 
-- name: Generate updated label value
-  ansible.builtin.set_fact:
-    updated_label_value: "{{ integration_prefix }}-L-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+  - name: Generate updated label value
+    ansible.builtin.set_fact:
+      updated_label_value: "{{ integration_prefix }}-L-{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
-- name: Test check mode for label update
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: app
-    value: "{{ updated_label_value }}"
-    state: present
-  check_mode: yes
-  register: result
+  - name: Test check mode for label update
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: app
+      value: "{{ updated_label_value }}"
+      state: present
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for a label update returns successfully with updates
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
+  - name: Assert that check mode for a label update returns successfully with updates
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
 
-- name: Test label update
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: app
-    value: "{{ updated_label_value }}"
-    state: present
-  register: result
+  - name: Test label update
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: app
+      value: "{{ updated_label_value }}"
+      state: present
+    register: result
 
-- name: Assert that a label update returns successfully with updated values
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.label['value'] == updated_label_value
+  - name: Assert that a label update returns successfully with updated values
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.label['value'] == updated_label_value
 
-- name: Test updating label key
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: invalidvalue
-    value: "{{ updated_label_value }}"
-    state: present
-  ignore_errors: yes
-  register: result
+  - name: Test updating label key
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: invalidvalue
+      value: "{{ updated_label_value }}"
+      state: present
+    ignore_errors: yes
+    register: result
 
-- name: Assert that attempting to update an existing label key causes the module to fail with the expected error message
-  ansible.builtin.assert:
-    that:
-      - result is failed
-      - "result.msg == 'Unable to update key of existing label'"
+  - name: Assert that attempting to update an existing label key causes the module to fail with the expected error message
+    ansible.builtin.assert:
+      that:
+        - result is failed
+        - "result.msg == 'Unable to update key of existing label'"
 
-- name: Test check mode for label deletion
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    key: app
-    value: "{{ updated_label_value }}"
-    state: absent
-  check_mode: yes
-  register: result
+  - name: Test check mode for label deletion
+    illumio.core.label:
+      key: app
+      value: "{{ updated_label_value }}"
+      state: absent
+    check_mode: yes
+    register: result
 
-- name: Assert that check mode for absent state returns successfully
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
+  - name: Assert that check mode for absent state returns successfully
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
 
-- name: Test label deletion
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    key: app
-    value: "{{ updated_label_value }}"
-    state: absent
-  register: result
+  - name: Test label deletion
+    illumio.core.label:
+      href: "{{ label_href }}"
+      key: app
+      value: "{{ updated_label_value }}"
+      state: absent
+    register: result
 
-- name: Assert that setting absent state returns successfully with an empty object
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is changed
-      - result.label == {}
+  - name: Assert that setting absent state returns successfully with an empty object
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is changed
+        - result.label == {}
 
-- name: Test that the label has been marked as deleted
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ label_href }}"
-    state: present
-  register: result
+  - name: Test that the label has been marked as deleted
+    illumio.core.label:
+      href: "{{ label_href }}"
+      state: present
+    register: result
 
-- name: Assert that passing the HREF of a deleted label succeeds and returns the label with deleted = true
-  ansible.builtin.assert:
-    that:
-      - result is success
-      - result is not changed
-      - result.label['deleted'] == true
+  - name: Assert that passing the HREF of a deleted label succeeds and returns the label with deleted = true
+    ansible.builtin.assert:
+      that:
+        - result is success
+        - result is not changed
+        - result.label['deleted'] == true
 
-- name: Define invalid label HREF
-  ansible.builtin.set_fact:
-    invalid_label_href: "/orgs/{{ illumio_pce_org_id }}/labels/00"
+  - name: Define invalid label HREF
+    ansible.builtin.set_fact:
+      invalid_label_href: "/orgs/{{ illumio_pce_org_id }}/labels/00"
 
-- name: Test invalid label HREF
-  illumio.core.label:
-    pce_hostname: "{{ illumio_pce_hostname }}"
-    pce_port: "{{ illumio_pce_port }}"
-    pce_org_id: "{{ illumio_pce_org_id }}"
-    api_key_username: "{{ illumio_pce_api_key }}"
-    api_key_secret: "{{ illumio_pce_api_secret }}"
-    href: "{{ invalid_label_href }}"
-    state: present
-  check_mode: yes
-  ignore_errors: yes
-  register: result
+  - name: Test invalid label HREF
+    illumio.core.label:
+      href: "{{ invalid_label_href }}"
+      state: present
+    check_mode: yes
+    ignore_errors: yes
+    register: result
 
-- name: Assert that passing an invalid HREF causes the module to fail with the expected error message
-  ansible.builtin.assert:
-    that:
-      - result is failed
-      - "result.msg == 'Failed to get PCE object with HREF {{ invalid_label_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ invalid_label_href }}'"
+  - name: Assert that passing an invalid HREF causes the module to fail with the expected error message
+    ansible.builtin.assert:
+      that:
+        - result is failed
+        - "result.msg == 'Failed to get PCE object with HREF {{ invalid_label_href }}: 404 Client Error: Not Found for url: https://{{ illumio_pce_hostname }}:{{ illumio_pce_port }}/api/v2{{ invalid_label_href }}'"
+
+  module_defaults:
+    illumio.core.label:
+      pce_hostname: "{{ illumio_pce_hostname }}"
+      pce_port: "{{ illumio_pce_port }}"
+      pce_org_id: "{{ illumio_pce_org_id }}"
+      api_key_username: "{{ illumio_pce_api_key }}"
+      api_key_secret: "{{ illumio_pce_api_secret }}"
