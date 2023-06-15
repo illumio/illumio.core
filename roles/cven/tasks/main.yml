@@ -6,6 +6,11 @@
     pce_org_id: "{{ illumio_pce_org_id }}"
     api_key_username: "{{ illumio_pce_api_key }}"
     api_key_secret: "{{ illumio_pce_api_secret }}"
+    pce_tls_verify: "{{ illumio_pce_tls_verify | default(omit) }}"
+    pce_tls_ca: "{{ illumio_pce_tls_ca | default(omit) }}"
+    pce_tls_client_certs: "{{ illumio_pce_tls_client_certs | default(omit) }}"
+    pce_http_proxy: "{{ illumio_pce_http_proxy | default(omit) }}"
+    pce_https_proxy: "{{ illumio_pce_https_proxy | default(omit) }}"
     name: "{{ illumio_cven_profile_name }}"
     description: "{{ illumio_cven_profile_description }}"
     enabled: true
@@ -24,6 +29,11 @@
     pce_org_id: "{{ illumio_pce_org_id }}"
     api_key_username: "{{ illumio_pce_api_key }}"
     api_key_secret: "{{ illumio_pce_api_secret }}"
+    pce_tls_verify: "{{ illumio_pce_tls_verify | default(omit) }}"
+    pce_tls_ca: "{{ illumio_pce_tls_ca | default(omit) }}"
+    pce_tls_client_certs: "{{ illumio_pce_tls_client_certs | default(omit) }}"
+    pce_http_proxy: "{{ illumio_pce_http_proxy | default(omit) }}"
+    pce_https_proxy: "{{ illumio_pce_https_proxy | default(omit) }}"
     pairing_profile_href: "{{ cven_pairing_profile_result.pairing_profile['href'] }}"
   delegate_to: '127.0.0.1'
   register: cven_pairing_key_result
