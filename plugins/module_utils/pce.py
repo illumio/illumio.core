@@ -67,8 +67,10 @@ class PceApiBase(object):
                 https_proxy=pce_https_proxy
             )
 
-        if not self._pce.check_connection():
-            module.fail_json("Failed to establish a connection to the PCE.")
+        try:
+            self._pce.must_connect()
+        except Exception as e:
+            module.fail_json("Failed to establish a connection to the PCE: {}".format(str(e)))
 
 
 class PceObjectApi(PceApiBase, metaclass=ABCMeta):
