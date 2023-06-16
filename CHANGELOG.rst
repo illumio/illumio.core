@@ -2,8 +2,8 @@
  Changelog
 ===========
 
-Version 0.2.6 (TBD)
--------------------
+Version 0.2.6 (June 16, 2023)
+-----------------------------
 
 * increment `illumio` python library version requirement to 1.1.3
 
