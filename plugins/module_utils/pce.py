@@ -70,7 +70,7 @@ class PceApiBase(object):
         try:
             self._pce.must_connect()
         except Exception as e:
-            module.fail_json("Failed to establish a connection to the PCE: {}".format(str(e)))
+            module.fail_json("Failed to establish a connection to the PCE: %s" % (str(e)))
 
 
 class PceObjectApi(PceApiBase, metaclass=ABCMeta):
