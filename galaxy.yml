@@ -18,6 +18,9 @@ dependencies:
   community.general: '*'
   kubernetes.core: '*'
 repository: https://github.com/illumio/illumio.core
+documentation: https://github.com/illumio/illumio.core
+homepage: https://github.com/illumio/illumio.core
+issues: https://github.com/illumio/illumio.core/issues
 build_ignore:
   - '.github'
   - '.gitignore'
