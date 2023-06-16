@@ -8,32 +8,15 @@ on:
 
 jobs:
   ansible-lint:
-    name: ansible-lint ${{ matrix.ansible }}+py${{ matrix.python }}
-    strategy:
-      matrix:
-        ansible:
-          - stable-2.12
-          - stable-2.13
-          - stable-2.14
-          - stable-2.15
-        python:
-          - "3.9"
+    name: Ansible Lint
     runs-on: ubuntu-latest
     steps:
 
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.ansible }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install ansible-base ${{ matrix.ansible }}
-        run: pip install ansible-lint yamllint https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
-
       - name: Run ansible-lint
-        run: ansible-lint --force-color -v
+        uses: ansible/ansible-lint-action@v6
 
   sanity:
     name: Sanity ${{ matrix.ansible }}+py${{ matrix.python }}
