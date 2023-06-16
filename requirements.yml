@@ -1,0 +1,6 @@
+---
+collections:
+
+- ansible.windows
+- community.general
+- kubernetes.core
