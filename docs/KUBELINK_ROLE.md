@@ -31,6 +31,8 @@ PCE Version  | Kubelink 2.0 | Kubelink 2.1
 ------------ | :----------: | :---------: 
 21.2         | X            | 
 21.5         | X            | X
+22.2         | X            | X
+22.5         | X            | X
 
 ## Installation  
 
@@ -98,6 +100,11 @@ Variable | Description | Data Type | Environment variable | Default value
 `illumio_pce_org_id` | PCE Organization ID | `int` | `ILLUMIO_PCE_ORG_ID` | `1`
 `illumio_pce_api_key` | PCE API key | `str` | `ILLUMIO_API_KEY_USERNAME` | -
 `illumio_pce_api_secret` | PCE API secret | `str` | `ILLUMIO_API_KEY_SECRET` | -
+`illumio_pce_tls_verify` | Enable/disable TLS verification | `bool` | - | `true`
+`illumio_pce_tls_ca` | Custom root CA path. If set, overrides `illumio_pce_tls_verify` | `str` | - | -
+`illumio_pce_tls_client_certs` | TLS client cert paths. Can point to a single PEM file containing public/private pair or two separate files | `list` | - | -
+`illumio_pce_http_proxy` | HTTP proxy server | `str` | `http_proxy` | -
+`illumio_pce_https_proxy` | HTTPS proxy server | `str` | `https_proxy` | -
 
 ### Container Cluster  
 

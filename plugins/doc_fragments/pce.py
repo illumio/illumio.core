@@ -42,4 +42,30 @@ options:
       - Can be set with the environment variable C(ILLUMIO_API_KEY_SECRET).
     type: str
     required: true
+  pce_tls_verify:
+    description:
+      - Flag denoting whether TLS verification should be enabled on the PCE connection.
+    type: bool
+    default: true
+  pce_tls_ca:
+    description:
+      - Path to a custom root CA certificate bundle to use for the PCE connection.
+      - If set, overrides C(pce_tls_verify).
+    type: str
+  pce_tls_client_certs:
+    description:
+      - Optional paths to client-side certificate files.
+      - May point to separate cert and private key files or a PEM bundle containing both.
+    type: list
+    elements: str
+  pce_http_proxy:
+    description:
+      - HTTP proxy server to use when connecting to the PCE.
+      - If not set, it will use the default C(http_proxy) environment variable.
+    type: str
+  pce_https_proxy:
+    description:
+      - HTTPS proxy server to use when connecting to the PCE.
+      - If not set, it will use the default C(https_proxy) environment variable.
+    type: str
 '''

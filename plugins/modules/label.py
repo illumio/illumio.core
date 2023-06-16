@@ -18,7 +18,7 @@ author:
   - Duncan Sommerville (@dsommerville-illumio)
 requirements:
   - "python>=3.8"
-  - "illumio>=1.1.1"
+  - "illumio>=1.1.3"
 version_added: "0.3.0"
 
 options:

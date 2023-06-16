@@ -46,10 +46,10 @@ Python version **3.8** or higher is required for this collection.
 
 **Python**  
 
-For most components, you will need the `illumio` Python library version **1.1.1** or higher installed on the Ansible controller:  
+For most components, you will need the `illumio` Python library version **1.1.3** or higher installed on the Ansible controller:  
 
 ```sh
-$ pip install illumio>=1.1.1
+$ pip install illumio>=1.1.3
 ```
 
 For Windows hosts, you will also need to install the `pywinrm` library on the Ansible controller:

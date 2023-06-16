@@ -5,9 +5,20 @@
 Version 0.2.6 (TBD)
 -------------------
 
+* increment `illumio` python library version requirement to 1.1.3
+
 FEATURES:
 
 * Label module - create/update/delete label objects in the PCE
+
+IMPROVEMENTS:
+
+* add the following options to all PCE modules:
+    * `pce_tls_verify` - flag denoting whether TLS verification should be enabled on the PCE connection
+    * `pce_tls_ca` - path to a custom root CA certificate bundle to use for the PCE connection
+    * `pce_tls_client_certs` - paths to client-side certificate files
+    * `pce_http_proxy` - HTTP proxy server to use when connecting to the PCE
+    * `pce_https_proxy` - HTTPS proxy server to use when connecting to the PCE
 
 Version 0.2.5 (June 12, 2023)
 -----------------------------

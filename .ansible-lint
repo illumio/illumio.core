@@ -2,9 +2,12 @@
 # .ansible-lint
 exclude_paths:
   - ${HOME}/.cache/
+  - .cache/
   - venv/
   - .github/
   - molecule/
+  - local/
+  - demo/
 
 use_default_rules: true
 

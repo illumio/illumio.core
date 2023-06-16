@@ -33,3 +33,7 @@ _version.py
 
 # local testing files
 local/
+demo/
+
+# ansible-lint
+.cache/

@@ -5,6 +5,21 @@
   tags:
     - always
 
+- name: "Stat VEN control tool"
+  become: true
+  ansible.windows.win_stat:
+    path: "{{ ven_ctl }}"
+  register: ven_cli
+  tags:
+    - always
+
+- name: "Fail on missing VEN control tool"
+  ansible.builtin.fail:
+    msg: "Missing VEN control tool at {{ ven_ctl }}"
+  when: not ven_cli.stat.exists
+  tags:
+    - always
+
 - name: "Start VEN"
   become: true
   ansible.windows.win_command: powershell.exe -file "{{ ven_ctl }}" start
@@ -68,17 +83,8 @@
     - never
     - ven_unpair
 
-- name: "Stat VEN control tool"
-  become: true
-  ansible.windows.win_stat:
-    path: "{{ ven_ctl }}"
-  register: ven_cli
-  tags:
-    - always
-    - ven_status
-
 - name: "Check VEN status"
-  when: ven_cli.stat.exists
+  when: "'ven_unpair' not in ansible_run_tags"
   tags:
     - always
     - ven_status
